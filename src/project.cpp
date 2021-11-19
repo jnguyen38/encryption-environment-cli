@@ -16,7 +16,8 @@ int main (const int argc, const char* argv[]) {
   // Check for valid file name if inputted
   if (argc == 2) {
     std::ifstream fin;
-    checkFile(fin);
+    std::string filename = argv[1];
+    checkFile(filename, fin);
   }
 
   // Open database file and read/write input into local hash table
@@ -24,8 +25,7 @@ int main (const int argc, const char* argv[]) {
   std::string currUser, currPass;
   std::unordered_map<std::string, std::string> database;
   while (fdata >> currUser >> currPass) {
-    database.insert({currUser, currPass});
-    std::cout << "Username: " << currUser << "\nPassword: " << currPass << std::endl;
+    readData(currUser, currPass, database);
   }
 
 

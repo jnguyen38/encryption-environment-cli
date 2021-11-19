@@ -7,4 +7,25 @@
  *                for the final project
  **********************************/
 
- #include "../include/funcproj.h"
+#include "../include/funcproj.h"
+
+void checkInput(const int argc) {
+  if (argc > 2) {
+    std::cout << "Error: Invalid number of inputs\n";
+    exit(-1);
+  }
+}
+
+void checkFile(std::string& filename, std::ifstream& fin) {
+  fin.open(filename);
+  while (!fin) {
+    std::cout << "Error: Invalid file name \"" << filename << "\"\nPlease enter a valid file name: ";
+    std::cin >> filename;
+    if (filename == "q" || filename == "quit") exit(-1);
+    fin.open(filename);
+  }
+}
+void readData(std::string currUser, std::string currPass, std::unordered_map<std::string, std::string>& database) {
+  database.insert({currUser, currPass});
+  std::cout << "Username: " << currUser << "\nPassword: " << currPass << std::endl;
+}

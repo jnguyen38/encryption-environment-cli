@@ -18,8 +18,8 @@
 #include <unordered_map>
 
 void checkInput(const int);
-void checkFile(std::ifstream&);
-void readData(std::ifstream&, std::unordered_map&);
+void checkFile(std::string&, std::ifstream&);
+void readData(std::string, std::string, std::unordered_map<std::string, std::string>&);
 
 
 #endif
