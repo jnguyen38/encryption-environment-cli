@@ -10,7 +10,16 @@
 #ifndef FUNCPROJ_H
 #define FUNCPROJ_H
 
-#include
+#include <string>
+#include <iostream>
+#include <fstream>
+#include <cstdlib>
+#include <vector>
+#include <unordered_map>
+
+void checkInput(const int);
+void checkFile(std::ifstream&);
+void readData(std::ifstream&, std::unordered_map&);
 
 
 #endif

@@ -33,11 +33,14 @@ $(OBJ)/MD5.o: $(SRC)/MD5.cpp
 $(OBJ)/DES.o: $(SRC)/DES.cpp
 	$(PP) $(CXXFLAGS) -c $(SRC)/DES.cpp -o $(OBJ)/DES.o
 
+$(OBJ)/funcproj.o: $(SRC)/funcproj.cpp
+	$(PP) $(CXXFLAGS) -c $(SRC)/funcproj.cpp -o $(OBJ)/funcproj.o
+
 SHA256_objs := $(OBJ)/SHA256.o $(SRC)/SHA256.cpp
 SHA1_objs := $(OBJ)/SHA1.o $(SRC)/SHA1.cpp
 MD5_objs := $(OBJ)/MD5.o $(SRC)/MD5.cpp
 DES_objs := $(OBJ)/DES.o $(SRC)/DES.cpp
-PROJ_objs := $(SHA256_objs) $(SHA1_objs) $(MD5_objs) $(DES_objs) $(OBJ)/projfunc.o $(SRC)/project.cpp
+PROJ_objs := $(SHA256_objs) $(SHA1_objs) $(MD5_objs) $(DES_objs) $(OBJ)/funcproj.o $(SRC)/project.cpp
 
 # Create the project executable
 project: $(PROJ_objs)
