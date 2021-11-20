@@ -20,6 +20,8 @@
 void checkInput(const int);
 void checkFile(std::string&, std::ifstream&);
 void readData(std::string, std::string, std::unordered_map<std::string, std::string>&);
-
+bool checkUser(std::unordered_map<std::string, std::string>&, std::string);
+void askPass(std::unordered_map<std::string, std::string>&, std::string);
+void createPass(std::unordered_map<std::string, std::string>&, std::string);
 
 #endif

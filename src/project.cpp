@@ -21,13 +21,24 @@ int main (const int argc, const char* argv[]) {
   }
 
   // Open database file and read/write input into local hash table
-  std::ifstream fdata ("../data/userPassTest.txt"); // Running Test File: Change later
+  std::ifstream fdata ("userPassTest.txt"); // Running Test File: Change later
   std::string currUser, currPass;
-  std::unordered_map<std::string, std::string> database;
+  std::unordered_map<std::string, std::string> dataHash;
   while (fdata >> currUser >> currPass) {
-    readData(currUser, currPass, database);
+    readData(currUser, currPass, dataHash);
   }
 
+  // Ask for username and check database
+  std::string username;
+  if (checkUser(dataHash, username)) {
+    askPass(dataHash, username);
+  } else {
+    createPass(dataHash, username);
+  }
+
+  // Save the password and hash
+  std::ofstream saveFile ("userPAssTest.txt"); // Running Test File: Change Later
+  
 
   return 0;
 }

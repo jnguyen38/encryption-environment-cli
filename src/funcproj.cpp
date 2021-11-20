@@ -27,5 +27,47 @@ void checkFile(std::string& filename, std::ifstream& fin) {
 }
 void readData(std::string currUser, std::string currPass, std::unordered_map<std::string, std::string>& database) {
   database.insert({currUser, currPass});
-  std::cout << "Username: " << currUser << "\nPassword: " << currPass << std::endl;
+  std::cout << "Username: " << currUser << "\nPassword: " << database[currUser] << std::endl;
+}
+
+bool checkUser(std::unordered_map<std::string, std::string>& dataHash, std::string username) {
+  return (dataHash.find(username) != dataHash.end()) ? true : false;
+}
+
+bool askPass(std::unordered_map<std::string, std::string>& dataHash, std::string username) {
+  unsigned int numTries = 3;
+  std::string guess;
+
+  // Initialize guess
+  std::cout << "Please enter your password: ";
+  std::cin >> guess;
+
+  // Repeat attempts if necessary, max of 3 attempts
+  while (guess != dataHash[username]) { // Should compare to hashAlg(guess) later *Idea: create a vector of strings indexed by dif hashes of guess
+    if (numTries == 0) {
+      std::cout << "No attempts remain\n";
+      return false;
+    } else {
+      std::cout << numTries << " attempts remain\n";
+    }
+    std::cout << "Please enter your password: ";
+    std::cin >> guess;
+  }
+
+  // Correct guess
+  std::cout << "Welcome, " << username << "!\n";
+  return true;
+}
+
+bool createPass(std::unordered_map<std::string, std::string>& dataHash, std::string username) {
+  std::string guess;
+  std::string firstPass;
+  std::string secondPass;
+  bool enterFirst = 1;
+  bool enterSecond = 1;
+  unsigned int numTries = 3;
+
+  // Initialize first password entry
+  std:: cout << "Please enter a password: ";
+  std::cin >>
 }
