@@ -29,16 +29,19 @@ int main (const int argc, const char* argv[]) {
   }
 
   // Ask for username and check database
-  std::string username;
+  std::string username = getUsername();
+  bool correctPass;
   if (checkUser(dataHash, username)) {
-    askPass(dataHash, username);
+    correctPass = (false & askPass(dataHash, username));
   } else {
-    createPass(dataHash, username);
+    correctPass = createPass(dataHash, username);
   }
 
-  // Save the password and hash
-  std::ofstream saveFile ("userPAssTest.txt"); // Running Test File: Change Later
-  
+  // Save the username and password
+  if (correctPass)
+    saveFile(dataHash, username);
+  else
+    std::cout << "No new username or password was saved\n";
 
   return 0;
 }
