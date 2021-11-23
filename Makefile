@@ -16,9 +16,15 @@ INC := include
 OBJ := objects
 EXE := exe
 
-# Initialize the folders for the objects and executables
-initialize:
-	mkdir $(OBJ) $(EXE)
+SHA256_objs := $(OBJ)/SHA256.o $(SRC)/SHA256.cpp
+SHA1_objs := $(OBJ)/SHA1.o $(SRC)/SHA1.cpp
+MD5_objs := $(OBJ)/MD5.o $(SRC)/MD5.cpp
+DES_objs := $(OBJ)/DES.o $(SRC)/DES.cpp
+PROJ_objs := $(SHA256_objs) $(SHA1_objs) $(MD5_objs) $(DES_objs) $(OBJ)/funcproj.o $(SRC)/project.cpp
+
+# Create the project executable
+project: $(PROJ_objs)
+	$(PP) $(CXXFLAGS) $(PROJ_objs) -o $(EXE)/project
 
 # Create the hash objects
 $(OBJ)/SHA256.o: $(SRC)/SHA256.cpp
@@ -36,15 +42,9 @@ $(OBJ)/DES.o: $(SRC)/DES.cpp
 $(OBJ)/funcproj.o: $(SRC)/funcproj.cpp
 	$(PP) $(CXXFLAGS) -c $(SRC)/funcproj.cpp -o $(OBJ)/funcproj.o
 
-SHA256_objs := $(OBJ)/SHA256.o $(SRC)/SHA256.cpp
-SHA1_objs := $(OBJ)/SHA1.o $(SRC)/SHA1.cpp
-MD5_objs := $(OBJ)/MD5.o $(SRC)/MD5.cpp
-DES_objs := $(OBJ)/DES.o $(SRC)/DES.cpp
-PROJ_objs := $(SHA256_objs) $(SHA1_objs) $(MD5_objs) $(DES_objs) $(OBJ)/funcproj.o $(SRC)/project.cpp
-
-# Create the project executable
-project: $(PROJ_objs)
-	$(PP) $(CXXFLAGS) $(PROJ_objs) -o $(EXE)/project
+# Initialize the folders for the objects and executables
+initialize:
+	mkdir $(OBJ) $(EXE)
 
 # Make clean
 clean:
