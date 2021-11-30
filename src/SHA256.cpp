@@ -296,7 +296,7 @@ std::string sha256(std::string input)
 }
 
 ////////////////keep this for working one
-/* main for debugging
+/*main for debugging
 int main(){
   //hash "abc"
   std::cout << "string: \"abc\"" << std::endl;
