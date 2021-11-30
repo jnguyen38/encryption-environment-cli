@@ -17,9 +17,15 @@
 #include <vector>
 #include <unordered_map>
 
+void getNewline(void);
 void checkInput(const int);
 void checkFile(std::string&, std::ifstream&);
 void readData(std::string, std::string, std::unordered_map<std::string, std::string>&);
-
+std::string getUsername(void);
+bool checkUser(std::unordered_map<std::string, std::string>&, std::string);
+bool askPass(std::unordered_map<std::string, std::string>&, std::string);
+bool confirmMatch(std::string, std::string);
+bool createPass(std::unordered_map<std::string, std::string>&, std::string);
+void saveFile(std::unordered_map<std::string, std::string>&, std::string);
 
 #endif
