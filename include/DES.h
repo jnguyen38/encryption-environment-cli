@@ -27,4 +27,13 @@ std::string bin2hex(std::string);
 
 std::string permute(std::string, int*, int);
 
+std::string shift_left(std::string, int);
+
+std::string binxor(std::string, std::string);
+
+std::string encrypt(std::string pt, std::vector<std::string>, std::vector<std::string>);
+
+
+
+
 #endif
