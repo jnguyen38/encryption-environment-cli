@@ -8,7 +8,7 @@ PP := g++
 
 # CFLAGS are the compiler flages for when we compile C code in this course
 FLAGS := -O2 -g -Wall -Wextra -Wconversion -Wshadow -Werror -lm
-CXXFLAGS := -m64 -std=c++11 -Weffc++ $(FLAGS)
+CXXFLAGS := -m64 -std=c++11 -Weffc++ -lcrypto $(FLAGS)
 
 # Folder Variables
 SRC := src
@@ -16,15 +16,9 @@ INC := include
 OBJ := objects
 EXE := exe
 
-SHA256_objs := $(OBJ)/SHA256.o $(SRC)/SHA256.cpp
-SHA1_objs := $(OBJ)/SHA1.o $(SRC)/SHA1.cpp
-MD5_objs := $(OBJ)/MD5.o $(SRC)/MD5.cpp
-DES_objs := $(OBJ)/DES.o $(SRC)/DES.cpp
-PROJ_objs := $(SHA256_objs) $(SHA1_objs) $(MD5_objs) $(DES_objs) $(OBJ)/funcproj.o $(SRC)/project.cpp
-
-# Create the project executable
-project: $(PROJ_objs)
-	$(PP) $(CXXFLAGS) $(PROJ_objs) -o $(EXE)/project
+# Initialize the folders for the objects and executables
+initialize:
+	mkdir $(OBJ) $(EXE)
 
 # Create the hash objects
 $(OBJ)/SHA256.o: $(SRC)/SHA256.cpp
@@ -42,9 +36,15 @@ $(OBJ)/DES.o: $(SRC)/DES.cpp
 $(OBJ)/funcproj.o: $(SRC)/funcproj.cpp
 	$(PP) $(CXXFLAGS) -c $(SRC)/funcproj.cpp -o $(OBJ)/funcproj.o
 
-# Initialize the folders for the objects and executables
-initialize:
-	mkdir $(OBJ) $(EXE)
+SHA256_objs := $(OBJ)/SHA256.o $(SRC)/SHA256.cpp
+SHA1_objs := $(OBJ)/SHA1.o $(SRC)/SHA1.cpp
+MD5_objs := $(OBJ)/MD5.o $(SRC)/MD5.cpp
+DES_objs := $(OBJ)/DES.o $(SRC)/DES.cpp
+PROJ_objs := $(SHA256_objs) $(SHA1_objs) $(MD5_objs) $(DES_objs) $(OBJ)/funcproj.o $(SRC)/project.cpp
+
+# Create the project executable
+project: $(PROJ_objs)
+	$(PP) $(CXXFLAGS) $(PROJ_objs) -o $(EXE)/project
 
 # Make clean
 clean:
