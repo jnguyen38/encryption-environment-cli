@@ -46,6 +46,9 @@ MD5_objs := $(OBJ)/MD5.o $(SRC)/MD5.cpp
 DES_objs := $(OBJ)/DES.o $(SRC)/DES.cpp
 PROJ_objs := $(SHA256_objs) $(SHA1_objs) $(MD5_objs) $(DES_objs) $(OBJ)/funcproj.o $(SRC)/project.cpp
 
+sha1: $(SRC)/SHA1.cpp
+	$(PP) $(CXXFLAGS) $(SRC)/SHA1.cpp -o $(EXE)/SHA1
+
 sha2: $(sha2_objs)
 	$(PP) $(CXXFLAGS) $(sha2_objs) -o $(EXE)/shatest
 

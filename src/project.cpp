@@ -1,7 +1,7 @@
 /**********************************
  * Authors: Catherine Pardi, Andrea Turner, Ryan O'Halloran, and Jonathan Nguyen
  * E-mails: cpardi@nd.edu, aturne22@nd.edu, rohallo2@nd.edu, and jnguyen5@nd.edu
- * File Name: funcproj.h
+ * File Name: project.cpp
  * Date Created: 11/19/21
  * File Contents: This file contains the main function
  *                for the final project
@@ -29,7 +29,6 @@ int main (const int argc, const char* argv[]) {
     readData(currUser, currPass, dataHash);
   }
 
-<<<<<<< HEAD
   // Ask for username and check database
   std::string username = getUsername();
   bool correctPass;
@@ -44,12 +43,7 @@ int main (const int argc, const char* argv[]) {
     saveFile(dataHash, username);
   else
     std::cout << "No new username or password was saved\n";
-  
-  std::string str = "notre dame";
-  MD5(str);
-  
-=======
->>>>>>> aturner
+
   return 0;
 
 }
