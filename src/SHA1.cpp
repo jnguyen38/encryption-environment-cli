@@ -394,7 +394,3 @@ std::string sha1_hash(const std::string &string)
     sha1_hash.update(string);
     return sha1_hash.final();
 }
-
-int main(){
-  std::cout << "hash:    " << sha1_hash("cat") << std::endl;
-}

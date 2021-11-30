@@ -63,13 +63,8 @@
 #ifndef SHA256_H
 #define SHA256_H
 
-//#include "../include/funcproj.h"
-#include <iostream>
-#include <sstream>
-#include <bitset>
-#include <vector>
-#include <iomanip>
-#include <cstring>
+#include "project.h"
+
 
 #define ROTRIGHT(word,bits) (((word) >> (bits)) | ((word) << (32-(bits))))
 #define SSIG0(x) (ROTRIGHT(x,7) ^ ROTRIGHT(x,18) ^ ((x) >> 3))

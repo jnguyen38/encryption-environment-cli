@@ -8,7 +8,6 @@
  **********************************/
 
 #include "../include/funcproj.h"
-#include "../include/MD5.h"
 
 int main (const int argc, const char* argv[]) {
   // Check for valid number of command line input
@@ -22,7 +21,7 @@ int main (const int argc, const char* argv[]) {
   }
 
   // Open database file and read/write input into local hash table
-  std::ifstream fdata ("userPassTest.txt"); // Running Test File: Change later
+  std::ifstream fdata ("data/userPassTest.txt"); // Running Test File: Change later
   std::string currUser, currPass;
   std::unordered_map<std::string, std::string> dataHash;
   while (fdata >> currUser >> currPass) {
