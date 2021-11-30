@@ -10,7 +10,30 @@
 #ifndef DES_H
 #define DES_H
 
-#include "funcproj.h"
+#include "project.h"
+
+// std::reverse hardcoded
+template <class BidirectionalIterator>
+void reverse (BidirectionalIterator first, BidirectionalIterator last) {
+  while ((first!=last)&&(first!=--last)) {
+    std::iter_swap (first,last);
+    ++first;
+  }
+}
+
+std::string hex2bin(std::string);
+
+std::string bin2hex(std::string);
+
+std::string permute(std::string, int*, int);
+
+std::string shift_left(std::string, int);
+
+std::string binxor(std::string, std::string);
+
+std::string encrypt(std::string pt, std::vector<std::string>, std::vector<std::string>);
+
+
 
 
 #endif
