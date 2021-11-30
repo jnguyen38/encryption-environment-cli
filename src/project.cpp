@@ -1,13 +1,14 @@
 /**********************************
  * Authors: Catherine Pardi, Andrea Turner, Ryan O'Halloran, and Jonathan Nguyen
  * E-mails: cpardi@nd.edu, aturne22@nd.edu, rohallo2@nd.edu, and jnguyen5@nd.edu
- * File Name: funcproj.h
+ * File Name: project.cpp
  * Date Created: 11/19/21
  * File Contents: This file contains the main function
  *                for the final project
  **********************************/
 
 #include "../include/funcproj.h"
+#include "../include/MD5.h"
 
 int main (const int argc, const char* argv[]) {
   // Check for valid number of command line input
@@ -44,4 +45,5 @@ int main (const int argc, const char* argv[]) {
     std::cout << "No new username or password was saved\n";
 
   return 0;
+
 }
