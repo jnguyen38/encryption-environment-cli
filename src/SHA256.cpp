@@ -11,7 +11,7 @@
 #include <cstring>
 #include <fstream>
 
-/*const unsigned int SHA256::sha256_k[64] = //UL = uint32
+/*const unsigned int SHA256::sha256_k[64] = //UL = unsigned long int
             {0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5,
              0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
              0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3,
@@ -31,9 +31,9 @@
 
 void SHA256::transform(const unsigned char *message, unsigned int block_nb)
 {
-    uint32 w[64];
-    uint32 wv[8];
-    uint32 t1, t2;
+    unsigned long int w[64];
+    unsigned long int wv[8];
+    unsigned long int t1, t2;
     const unsigned char *sub_block;
     int i;
     int j;
@@ -166,11 +166,7 @@ int main (int argc, char* argv[]) {
   return 0;
 } */
 
-#include <cstring>
-#include <fstream>
-#include "sha256.h"
-
-const unsigned int SHA256::sha256_k[64] = //UL = uint32
+const unsigned int SHA256::sha256_k[64] = //UL = unsigned long int
             {0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5,
              0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
              0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3,
@@ -190,9 +186,9 @@ const unsigned int SHA256::sha256_k[64] = //UL = uint32
 
 void SHA256::transform(const unsigned char *message, unsigned int block_nb)
 {
-    uint32 w[64];
-    uint32 wv[8];
-    uint32 t1, t2;
+    unsigned int w[64];
+    unsigned int wv[8];
+    unsigned int t1, t2;
     const unsigned char *sub_block;
     int i;
     int j;
@@ -289,16 +285,181 @@ std::string sha256(std::string input)
 
     SHA256 ctx = SHA256();
     ctx.init();
-    ctx.update( (unsigned char*)input.c_str(), input.length());
+    ctx.update( (unsigned char*)input.c_str(), (unsigned int)input.length());
     ctx.final(digest);
 
     char buf[2*SHA256::DIGEST_SIZE+1];
     buf[2*SHA256::DIGEST_SIZE] = 0;
-    for (int i = 0; i < SHA256::DIGEST_SIZE; i++)
+    for (unsigned int i = 0; i < SHA256::DIGEST_SIZE; i++)
         sprintf(buf+i*2, "%02x", digest[i]);
     return std::string(buf);
 }
 
+////////////////keep this for working one
+/* main for debugging
 int main(){
-  std::cout << "hash:    " << sha256("abc") << std::endl;
+  //hash "abc"
+  std::cout << "string: \"abc\"" << std::endl;
+  std::cout << "hash: " << sha256("abc") << std::endl << std::endl;
+
+  //hash "cat"
+  std::cout << "string: \"cat\"" << std::endl;
+  std::cout << "hash: " << sha256("cat") << std::endl;
 }
+*/
+///////////////////////
+
+/*
+#include <cstring>
+#include <sstream>
+#include <iomanip>
+
+SHA256::SHA256(): m_blocklen(0), m_bitlen(0) {
+	m_state[0] = 0x6a09e667;
+	m_state[1] = 0xbb67ae85;
+	m_state[2] = 0x3c6ef372;
+	m_state[3] = 0xa54ff53a;
+	m_state[4] = 0x510e527f;
+	m_state[5] = 0x9b05688c;
+	m_state[6] = 0x1f83d9ab;
+	m_state[7] = 0x5be0cd19;
+}
+
+void SHA256::update(const unsigned char * data, size_t length) {
+	for (size_t i = 0 ; i < length ; i++) {
+		m_data[m_blocklen++] = data[i];
+		if (m_blocklen == 64) {
+			transform();
+
+			// End of the block
+			m_bitlen += 512;
+			m_blocklen = 0;
+		}
+	}
+}
+
+void SHA256::update(const std::string &data) {
+	update(reinterpret_cast<const unsigned char*> (data.c_str()), data.size());
+}
+
+unsigned char * SHA256::digest() {
+	unsigned char * hash = new unsigned char[32];
+
+	pad();
+	revert(hash);
+
+	return hash;
+}
+
+unsigned long int SHA256::rotr(unsigned long int x, unsigned long int n) {
+	return (x >> n) | (x << (32 - n));
+}
+
+unsigned long int SHA256::choose(unsigned long int e, unsigned long int f, unsigned long int g) {
+	return (e & f) ^ (~e & g);
+}
+
+unsigned long int SHA256::majority(unsigned long int a, unsigned long int b, unsigned long int c) {
+	return (a & (b | c)) | (b & c);
+}
+
+unsigned long int SHA256::sig0(unsigned long int x) {
+	return SHA256::rotr(x, 7) ^ SHA256::rotr(x, 18) ^ (x >> 3);
+}
+
+unsigned long int SHA256::sig1(unsigned long int x) {
+	return SHA256::rotr(x, 17) ^ SHA256::rotr(x, 19) ^ (x >> 10);
+}
+
+void SHA256::transform() {
+	unsigned long int maj, xorA, ch, xorE, sum, newA, newE, m[64];
+	unsigned long int state[8];
+
+	for (unsigned char i = 0, j = 0; i < 16; i++, j += 4) { // Split data in 32 bit blocks for the 16 first words
+		m[i] = (m_data[j] << 24) | (m_data[j + 1] << 16) | (m_data[j + 2] << 8) | (m_data[j + 3]);
+	}
+
+	for (unsigned char k = 16 ; k < 64; k++) { // Remaining 48 blocks
+		m[k] = SHA256::sig1(m[k - 2]) + m[k - 7] + SHA256::sig0(m[k - 15]) + m[k - 16];
+	}
+
+	for(unsigned char i = 0 ; i < 8 ; i++) {
+		state[i] = m_state[i];
+	}
+
+	for (unsigned char i = 0; i < 64; i++) {
+		maj   = SHA256::majority(state[0], state[1], state[2]);
+		xorA  = SHA256::rotr(state[0], 2) ^ SHA256::rotr(state[0], 13) ^ SHA256::rotr(state[0], 22);
+
+		ch = choose(state[4], state[5], state[6]);
+
+		xorE  = SHA256::rotr(state[4], 6) ^ SHA256::rotr(state[4], 11) ^ SHA256::rotr(state[4], 25);
+
+		sum  = m[i] + K[i] + state[7] + ch + xorE;
+		newA = xorA + maj + sum;
+		newE = state[3] + sum;
+
+		state[7] = state[6];
+		state[6] = state[5];
+		state[5] = state[4];
+		state[4] = newE;
+		state[3] = state[2];
+		state[2] = state[1];
+		state[1] = state[0];
+		state[0] = newA;
+	}
+
+	for(unsigned char i = 0 ; i < 8 ; i++) {
+		m_state[i] += state[i];
+	}
+}
+
+void SHA256::pad() {
+
+	unsigned long long i = m_blocklen;
+	unsigned char end = m_blocklen < 56 ? 56 : 64;
+
+	m_data[i++] = 0x80; // Append a bit 1
+	while (i < end) {
+		m_data[i++] = 0x00; // Pad with zeros
+	}
+
+	if(m_blocklen >= 56) {
+		transform();
+		memset(m_data, 0, 56);
+	}
+
+	// Append to the padding the total message's length in bits and transform.
+	m_bitlen += m_blocklen * 8;
+	m_data[63] = (unsigned char) m_bitlen;
+	m_data[62] = (unsigned char) m_bitlen >> (unsigned char) 8;
+	m_data[61] = (unsigned char) m_bitlen >> (unsigned char) 16;
+	m_data[60] = (unsigned char) m_bitlen >> (unsigned char) 24;
+	m_data[59] = (unsigned char) m_bitlen >> (unsigned char) 32;
+	m_data[58] = (unsigned char) m_bitlen >> (unsigned char) 40;
+	m_data[57] = (unsigned char) m_bitlen >> (unsigned char) 48;
+	m_data[56] = (unsigned char) m_bitlen >> (unsigned char) 56;
+	transform();
+}
+
+void SHA256::revert(unsigned char * hash) {
+	// SHA uses big endian byte ordering
+	// Revert all bytes
+	for (unsigned char i = 0 ; i < 4 ; i++) {
+		for(unsigned char j = 0 ; j < 8 ; j++) {
+			hash[i + (j * 4)] = (m_state[j] >> (24 - i * 8)) & 0x000000ff;
+		}
+	}
+}
+
+std::string SHA256::toString(const unsigned char * digest) {
+	std::stringstream s;
+	s << std::setfill('0') << std::hex;
+
+	for(unsigned char i = 0 ; i < 32 ; i++) {
+		s << std::setw(2) << (unsigned int) digest[i];
+	}
+
+	return s.str();
+}
+*/

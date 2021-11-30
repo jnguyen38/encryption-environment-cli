@@ -41,18 +41,22 @@ void SHA1::update(const std::string &string)
     update(stream_str);
 }
 
-
+//now pass stream_str to another update function - use overloading in C++ to do this
 void SHA1::update(std::istream &stream_str)
 {
     std::string rest_of_buffer;
+    //use read string and update for length of string inputted
     SHA1::read(stream_str, rest_of_buffer, BLOCK_BYTES - (int)buffer.size());
-    buffer += rest_of_buffer;
+    buffer += rest_of_buffer; //add to buffer
 
     while (stream_str)
     {
         unsigned long int block[BLOCK_INTS];
+        //standard buffer for SHA1
         SHA1::buffer_to_block(buffer, block);
+        //perform hashing in transform
         transform(block);
+        //read again
         SHA1::read(stream_str, buffer, BLOCK_BYTES);
     }
 }
@@ -67,7 +71,7 @@ std::string SHA1::final()
     /* Total number of hashed bits */
     unsigned long long total_bits = (transforms*BLOCK_BYTES + buffer.size()) * 8;
 
-    /* Padding */
+    // Padding that occurs in SHA1 by its definition
     buffer += (char) 0x80;
     unsigned long int orig_size = buffer.size();
     while (buffer.size() < BLOCK_BYTES)
@@ -76,11 +80,12 @@ std::string SHA1::final()
     }
 
     unsigned long int block[BLOCK_INTS];
+    //standard buffer for SHA1
     SHA1::buffer_to_block(buffer, block);
 
     if (orig_size > BLOCK_BYTES - 8)
     {
-        transform(block);
+        transform(block); //transform number of times based on length of buffer and string
         for (unsigned int i = 0; i < BLOCK_INTS - 2; i++)
         {
             block[i] = 0;
@@ -92,7 +97,7 @@ std::string SHA1::final()
     block[BLOCK_INTS - 2] = (total_bits >> 32);
     transform(block);
 
-    /* Hex std::string */
+    // change from hex to string
     std::ostringstream result;
     for (unsigned int i = 0; i < 5; i++)
     {
@@ -103,14 +108,17 @@ std::string SHA1::final()
     /* Reset for next run */
     initialize();
 
+    //get final string
     return result.str();
 }
 
 /* Help macros */
+//these are defined by the SHA1 algorithm
 #define SHA1_ROL(value, bits) (((value) << (bits)) | (((value) & 0xffffffff) >> (32 - (bits))))
 #define SHA1_BLK(i) (block[i&15] = SHA1_ROL(block[(i+13)&15] ^ block[(i+8)&15] ^ block[(i+2)&15] ^ block[i&15],1))
 
 /* (R0+R1), R2, R3, R4 are the different operations used in SHA1 */
+//these are defined by the SHA1 algorithm
 #define SHA1_ROUND_0(v,w,x,y,z,i) z += ((w&(x^y))^y)     + block[i]    + 0x5a827999 + SHA1_ROL(v,5); w=SHA1_ROL(w,30);
 #define SHA1_ROUND_1(v,w,x,y,z,i) z += ((w&(x^y))^y)     + SHA1_BLK(i) + 0x5a827999 + SHA1_ROL(v,5); w=SHA1_ROL(w,30);
 #define SHA1_ROUND_2(v,w,x,y,z,i) z += (w^x^y)           + SHA1_BLK(i) + 0x6ed9eba1 + SHA1_ROL(v,5); w=SHA1_ROL(w,30);
@@ -242,7 +250,7 @@ void SHA1::read(std::istream &stream_str, std::string &string, int max)
     char str_buf[max];
     // stream_str.read will extract max characters from the string and stroe it in str_buf
     stream_str.read(str_buf, max);
-    //str_buf is assigned number of characters, so long lon gthe string is
+    //string is assigned the first .gcount number of characters in str_buff so how long the string is
     string.assign(str_buf, stream_str.gcount());
 }
 
@@ -254,6 +262,14 @@ std::string sha1(const std::string &string)
     return sha1_hash.final(); // .final converts the hash to a string, so we can return it
 }
 
+/* main for debugging
 int main(){
-  std::cout << "hash:    " << sha1("abc") << std::endl;
+  //hash "abc"
+  std::cout << "string: \"abc\"" << std::endl;
+  std::cout << "hash: " << sha1("abc") << std::endl << std::endl;
+
+  //hash "cat"
+  std::cout << "string: \"cat\"" << std::endl;
+  std::cout << "hash: " << sha1("cat") << std::endl;
 }
+*/
