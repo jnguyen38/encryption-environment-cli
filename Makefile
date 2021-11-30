@@ -8,7 +8,7 @@ PP := g++
 
 # CFLAGS are the compiler flages for when we compile C code in this course
 FLAGS := -O2 -g -Wall -Wextra -Wconversion -Wshadow -Werror -lm
-CXXFLAGS := -m64 -std=c++11 -Weffc++ $(FLAGS)
+CXXFLAGS := -m64 -std=c++11 -Weffc++ -lcrypto $(FLAGS)
 
 # Folder Variables
 SRC := src
@@ -36,6 +36,10 @@ $(OBJ)/DES.o: $(SRC)/DES.cpp
 $(OBJ)/funcproj.o: $(SRC)/funcproj.cpp
 	$(PP) $(CXXFLAGS) -c $(SRC)/funcproj.cpp -o $(OBJ)/funcproj.o
 
+$(OBJ)/SHA256func.o: $(SRC)/SHA256functions.cpp
+	$(PP) $(CXXFLAGS) -c $(SRC)/SHA256functions.cpp -o $(OBJ)/SHA256func.o
+
+sha2_objs := $(OBJ)/SHA256func.o $(SRC)/SHA256.cpp
 SHA256_objs := $(OBJ)/SHA256.o $(SRC)/SHA256.cpp
 SHA1_objs := $(OBJ)/SHA1.o $(SRC)/SHA1.cpp
 MD5_objs := $(OBJ)/MD5.o $(SRC)/MD5.cpp
@@ -44,6 +48,9 @@ PROJ_objs := $(SHA256_objs) $(SHA1_objs) $(MD5_objs) $(DES_objs) $(OBJ)/funcproj
 
 sha1: $(SRC)/SHA1.cpp
 	$(PP) $(CXXFLAGS) $(SRC)/SHA1.cpp -o $(EXE)/SHA1
+
+sha2: $(sha2_objs)
+	$(PP) $(CXXFLAGS) $(sha2_objs) -o $(EXE)/shatest
 
 # Create the project executable
 project: $(PROJ_objs)

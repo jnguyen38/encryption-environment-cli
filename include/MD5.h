@@ -10,7 +10,13 @@
 #ifndef MD5_H
 #define MD5_H
 
-#include "funcproj.h"
+#include <openssl/evp.h> 
+#include <string>
+#include <iostream>
+#include <cstdlib>
+#include <string.h>
 
+unsigned char *getMd5Hash(unsigned char *, unsigned long, int *);
+void MD5(std::string inpStr);
 
 #endif

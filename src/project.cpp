@@ -8,6 +8,7 @@
  **********************************/
 
 #include "../include/funcproj.h"
+#include "../include/MD5.h"
 
 int main (const int argc, const char* argv[]) {
   // Check for valid number of command line input
@@ -44,4 +45,5 @@ int main (const int argc, const char* argv[]) {
     std::cout << "No new username or password was saved\n";
 
   return 0;
+
 }
