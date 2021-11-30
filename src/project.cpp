@@ -28,6 +28,5 @@ int main (const int argc, const char* argv[]) {
     readData(currUser, currPass, database);
   }
 
-
   return 0;
 }
