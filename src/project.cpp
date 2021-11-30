@@ -43,9 +43,10 @@ int main (const int argc, const char* argv[]) {
     saveFile(dataHash, username);
   else
     std::cout << "No new username or password was saved\n";
-
-  return 0;
-
+  
   std::string str = "notre dame";
   MD5(str);
+  
+  return 0;
+
 }
