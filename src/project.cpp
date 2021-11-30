@@ -29,6 +29,7 @@ int main (const int argc, const char* argv[]) {
     readData(currUser, currPass, dataHash);
   }
 
+<<<<<<< HEAD
   // Ask for username and check database
   std::string username = getUsername();
   bool correctPass;
@@ -47,6 +48,8 @@ int main (const int argc, const char* argv[]) {
   std::string str = "notre dame";
   MD5(str);
   
+=======
+>>>>>>> aturner
   return 0;
 
 }
