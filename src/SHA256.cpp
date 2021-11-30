@@ -201,7 +201,7 @@ void SHA256::transform(const unsigned char *message, unsigned int block_nb)
             w[j] =  SHA256_F4(w[j -  2]) + w[j -  7] + SHA256_F3(w[j - 15]) + w[j - 16];
         }
         for (j = 0; j < 8; j++) {
-            wv[j] = m_h[j];
+            wv[j] = (unsigned int) m_h[j];
         }
         for (j = 0; j < 64; j++) {
             t1 = wv[7] + SHA256_F2(wv[4]) + SHA2_CH(wv[4], wv[5], wv[6])
@@ -296,7 +296,7 @@ std::string sha256(std::string input)
 }
 
 ////////////////keep this for working one
-/*main for debugging
+/* main for debugging
 int main(){
   //hash "abc"
   std::cout << "string: \"abc\"" << std::endl;
