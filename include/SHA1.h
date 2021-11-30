@@ -10,7 +10,7 @@
 #ifndef SHA1_H
 #define SHA1_H
 
-#include "funcproj.h"
+#include "project.h"
 
 
 #endif

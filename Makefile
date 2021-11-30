@@ -42,6 +42,9 @@ $(OBJ)/DES.o: $(SRC)/DES.cpp
 $(OBJ)/funcproj.o: $(SRC)/funcproj.cpp
 	$(PP) $(CXXFLAGS) -c $(SRC)/funcproj.cpp -o $(OBJ)/funcproj.o
 
+DES: $(SRC)/DES.cpp
+	$(PP) $(CXXFLAGS) $(SRC)/DES.cpp -o $(EXE)/DES
+
 # Initialize the folders for the objects and executables
 initialize:
 	mkdir $(OBJ) $(EXE)

@@ -10,12 +10,11 @@
 #ifndef FUNCPROJ_H
 #define FUNCPROJ_H
 
-#include <string>
-#include <iostream>
-#include <fstream>
-#include <cstdlib>
-#include <vector>
-#include <unordered_map>
+#include "project.h"
+#include "DES.h"
+#include "SHA1.h"
+#include "SHA256.h"
+#include "MD5.h"
 
 void getNewline(void);
 void checkInput(const int);
