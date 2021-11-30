@@ -23,6 +23,9 @@ void readData(std::string, std::string, std::unordered_map<std::string, std::str
 std::string getUsername(void);
 bool checkUser(std::unordered_map<std::string, std::string>&, std::string);
 bool askPass(std::unordered_map<std::string, std::string>&, std::string);
+bool checkInvalidChar(std::string);
+bool checkContainCapitalNumSpecial(std::string);
+bool checkNewPass(std::string);
 bool confirmMatch(std::string, std::string);
 bool createPass(std::unordered_map<std::string, std::string>&, std::string);
 void saveFile(std::unordered_map<std::string, std::string>&, std::string);
