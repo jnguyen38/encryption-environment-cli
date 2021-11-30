@@ -8,14 +8,12 @@
  **********************************/
  /*
  This code is adapted from github library, which can be found at link
- https://github.com/Breathleas/AES-DES-3DES-MD5-RC4-SHA1-SHA256-BASE64/blob/master/SHA1/sha1.hpp
+ http://www.zedwood.com/article/cpp-sha1-function
  */
+
  #include <string>
- //#include <string.h>
-// #include <cstdint>
  #include <iostream>
  #include <fstream>
- //#include <unordered_map>
  #include <sstream>
  #include <iomanip>
 
@@ -31,6 +29,7 @@ public:
     std::string final();
 
 private:
+    // two variables, type static so the static functions can access these elements
     static const unsigned int BLOCK_INTS = 16;  /* number of 32bit integers per SHA1 block */
     static const unsigned int BLOCK_BYTES = BLOCK_INTS * 4;
 
@@ -45,27 +44,7 @@ private:
     static void read(std::istream &is, std::string &s, int max);
 };
 
+//function that allows user to input string and returns final hashed string
 std::string sha1(const std::string &string);
-
-/*
-public:
-  //same as initialize
-  SHA1();
-  void update(const char*);
-	void final(char*);
-  void hash_word(const char*, char*);
-  void buffer_to_block(const std::string &, unsigned int );
-  // initialize variables
-  void initialize();
-
-private:
-  //initialize array for hash
-  uint32_t hash[5];
-  //initialize string for buffer
-  std::size_t buffer_size;
-  //initialize uint32_t for transforms
-  unsigned int transforms;
-  char buffer[64];
-}; */
 
 #endif
