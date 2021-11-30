@@ -10,23 +10,14 @@
  This code is adapted from github library, which can be found at link
  https://github.com/Breathleas/AES-DES-3DES-MD5-RC4-SHA1-SHA256-BASE64/blob/master/SHA1/sha1.hpp
  */
- #include <string>
- //#include <string.h>
-// #include <cstdint>
- #include <iostream>
- #include <fstream>
- //#include <unordered_map>
- #include <sstream>
- #include <iomanip>
 
 #ifndef SHA1_H
 #define SHA1_H
 
-<<<<<<< HEAD
 #include "project.h"
-=======
+
 class SHA1{
->>>>>>> 7cc5a9dd0b331618e56d238c860c9a22f87ac1c2
+
 
 public:
     SHA1();

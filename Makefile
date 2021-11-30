@@ -16,7 +16,7 @@ INC := include
 OBJ := objects
 EXE := exe
 
-SHA256_objs := $(OBJ)/SHA256.o $(SRC)/SHA256.cpp
+SHA256_objs := $(OBJ)/SHA256.o $(SRC)/SHA256functions.cpp
 SHA1_objs := $(OBJ)/SHA1.o $(SRC)/SHA1.cpp
 MD5_objs := $(OBJ)/MD5.o $(SRC)/MD5.cpp
 DES_objs := $(OBJ)/DES.o $(SRC)/DES.cpp
@@ -27,8 +27,8 @@ project: $(PROJ_objs)
 	$(PP) $(CXXFLAGS) $(PROJ_objs) -o $(EXE)/project
 
 # Create the hash objects
-$(OBJ)/SHA256.o: $(SRC)/SHA256.cpp
-	$(PP) $(CXXFLAGS) -c $(SRC)/SHA256.cpp -o $(OBJ)/SHA256.o
+$(OBJ)/SHA256.o: $(SRC)/SHA256functions.cpp
+	$(PP) $(CXXFLAGS) -c $(SRC)/SHA256functions.cpp -o $(OBJ)/SHA256.o
 
 $(OBJ)/SHA1.o: $(SRC)/SHA1.cpp
 	$(PP) $(CXXFLAGS) -c $(SRC)/SHA1.cpp -o $(OBJ)/SHA1.o

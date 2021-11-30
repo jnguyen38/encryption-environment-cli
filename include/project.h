@@ -17,7 +17,10 @@
 #include <vector>
 #include <unordered_map>
 #include <cmath>
-#include <openssl/evp.h> 
+#include <openssl/evp.h>
 #include <string.h>
+#include <sstream>
+#include <iomanip>
+#include <bitset>
 
 #endif

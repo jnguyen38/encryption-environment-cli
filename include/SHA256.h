@@ -63,16 +63,8 @@
 #ifndef SHA256_H
 #define SHA256_H
 
-<<<<<<< HEAD
 #include "project.h"
-=======
-//#include "../include/funcproj.h"
-#include <iostream>
-#include <sstream>
-#include <bitset>
-#include <vector>
-#include <iomanip>
-#include <cstring>
+
 
 #define ROTRIGHT(word,bits) (((word) >> (bits)) | ((word) << (32-(bits))))
 #define SSIG0(x) (ROTRIGHT(x,7) ^ ROTRIGHT(x,18) ^ ((x) >> 3))
@@ -113,7 +105,6 @@ const bool show_T1_calculation = false;
 const bool show_T2_calculation = false;
 
 const bool show_hash_segments = false;
->>>>>>> 7cc5a9dd0b331618e56d238c860c9a22f87ac1c2
 
 const bool show_Wt = false;
 

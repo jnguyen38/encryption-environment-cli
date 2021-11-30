@@ -144,7 +144,7 @@ bool createPass(std::unordered_map<std::string, std::string>& dataHash, std::str
 
 // Append the database file wiht the given username and password
 void saveFile(std::unordered_map<std::string, std::string>& dataHash, std::string username) {
-  std::ofstream sFile ("userPassTest.txt", std::fstream::app); // **FIX: Running Test File: Change Later // fstream::app appends rather than overwriting
+  std::ofstream sFile ("data/userPassTest.txt", std::fstream::app); // **FIX: Running Test File: Change Later // fstream::app appends rather than overwriting
   sFile << username + " " + dataHash[username];
   std::cout << "Your username and password have been saved\n";
 }
