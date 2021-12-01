@@ -125,7 +125,7 @@ bool checkContainCapitalNumSpecial(std::string word) {
       break;
     }
   }
-  if (numCats >= 3) {
+  if (numCats > 2) {
     return true;
   }
   else {
