@@ -82,12 +82,6 @@ bool askPass(std::unordered_map<std::string, std::string>& dataHash, std::string
   return true;
 }
 
-<<<<<<< HEAD
-bool checkPass(std::string newPass) {
-  if (newPass.size() < 8 || newPass.size() > 16)
-    return false;
-  else if (newPass.find())
-=======
 // Check if string contains any invalid characters
 bool checkInvalidChar(std::string word) {
   for (unsigned int i = 0; i < word.length(); ++i) {
@@ -160,7 +154,7 @@ bool checkNewPass(std::string newPass) {
   else {
     return true;
   }
->>>>>>> 32d54510c34d6aa80095179be511f75c2917fbc6
+
 }
 
 bool confirmMatch(std::string newPass, std::string confirmPass) {
@@ -198,25 +192,20 @@ bool createPass(std::unordered_map<std::string, std::string>& dataHash, std::str
     std::cin >> newPass;
     // getNewline();
 
-<<<<<<< HEAD
-    // Check quit signal
-    if (newPass == "q" || newPass == "quit") {
-      std::cout << "Quitting Program\n";
-      return false;
-    }
-
-    // Check password requirements
-    if (checkPass(newPass)) {
-
-=======
     // Check if new password is valid
     while (!valid) {
+      // Check quit signal
+      if (newPass == "q" || newPass == "quit") {
+        std::cout << "Quitting Program\n";
+        return false;
+      }
+      
       valid = checkNewPass(newPass);
       if (!valid) {
         std::cout << "Password invalid. Please choose a new password: " << std::endl;
         std::cin >> newPass;
       }
->>>>>>> 32d54510c34d6aa80095179be511f75c2917fbc6
+
     }
 
     // Iniitialize confirmation password
