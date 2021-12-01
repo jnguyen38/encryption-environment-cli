@@ -82,6 +82,12 @@ bool askPass(std::unordered_map<std::string, std::string>& dataHash, std::string
   return true;
 }
 
+<<<<<<< HEAD
+bool checkPass(std::string newPass) {
+  if (newPass.size() < 8 || newPass.size() > 16)
+    return false;
+  else if (newPass.find())
+=======
 // Check if string contains any invalid characters
 bool checkInvalidChar(std::string word) {
   for (unsigned int i = 0; i < word.length(); ++i) {
@@ -154,6 +160,7 @@ bool checkNewPass(std::string newPass) {
   else {
     return true;
   }
+>>>>>>> 32d54510c34d6aa80095179be511f75c2917fbc6
 }
 
 bool confirmMatch(std::string newPass, std::string confirmPass) {
@@ -167,15 +174,14 @@ bool confirmMatch(std::string newPass, std::string confirmPass) {
       std::cin >> confirmPass;
       // getNewline();
     } else {
-      std::cout << "\nYou may have had a typo. If you want to try a new password, type 'stop'\nOtherwise, please try again: ";
-      std::cin >> confirmPass;
-      // getNewline();
-      if (confirmPass == "stop") return true; // Return true to repeat outer loop
+      std::cout << "\nYou may have had a typo. Please enter a new password\n";
+      return true; // Return true to repeat outer loop
     }
   }
 
   return false; // Return false to break outer loop
 }
+
 
 // If the username is not found, create a new password, confirming it
 bool createPass(std::unordered_map<std::string, std::string>& dataHash, std::string username) {
@@ -192,6 +198,17 @@ bool createPass(std::unordered_map<std::string, std::string>& dataHash, std::str
     std::cin >> newPass;
     // getNewline();
 
+<<<<<<< HEAD
+    // Check quit signal
+    if (newPass == "q" || newPass == "quit") {
+      std::cout << "Quitting Program\n";
+      return false;
+    }
+
+    // Check password requirements
+    if (checkPass(newPass)) {
+
+=======
     // Check if new password is valid
     while (!valid) {
       valid = checkNewPass(newPass);
@@ -199,6 +216,7 @@ bool createPass(std::unordered_map<std::string, std::string>& dataHash, std::str
         std::cout << "Password invalid. Please choose a new password: " << std::endl;
         std::cin >> newPass;
       }
+>>>>>>> 32d54510c34d6aa80095179be511f75c2917fbc6
     }
 
     // Iniitialize confirmation password
@@ -208,12 +226,8 @@ bool createPass(std::unordered_map<std::string, std::string>& dataHash, std::str
 
     // Give user the option to re-enter their password or quit
     repeat = confirmMatch(newPass, confirmPass);
-    if (repeat) {
-      std::cout << "If you would like to quit, enter 'q' or 'quit'\nEnter any other key to try a new password\n";
-      std::cin >> option;
-      // getNewline();
-      if (option == "q" || option == "quit") return false;
-    }
+    if (repeat)
+      std::cout << "If you would like to quit, enter 'q' or 'quit' as a new password\n";
   } while (repeat);
 
   dataHash.insert({username, newPass}); // **FIX: Should insert the username with the HASHED password
