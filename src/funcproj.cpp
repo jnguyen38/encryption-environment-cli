@@ -82,9 +82,10 @@ bool askPass(std::unordered_map<std::string, std::string>& dataHash, std::string
   return true;
 }
 
-/**FIX: Set new password restrictions (ie 8 characters or more, numbers, special characters)
-bool getNewPass() {
-
+bool checkPass(std::string newPass) {
+  if (newPass.size() < 8 || newPass.size() > 16)
+    return false;
+  else if (newPass.find())
 }
 */
 
@@ -99,15 +100,14 @@ bool confirmMatch(std::string newPass, std::string confirmPass) {
       std::cin >> confirmPass;
       // getNewline();
     } else {
-      std::cout << "\nYou may have had a typo. If you want to try a new password, type 'stop'\nOtherwise, please try again: ";
-      std::cin >> confirmPass;
-      // getNewline();
-      if (confirmPass == "stop") return true; // Return true to repeat outer loop
+      std::cout << "\nYou may have had a typo. Please enter a new password\n";
+      return true; // Return true to repeat outer loop
     }
   }
 
   return false; // Return false to break outer loop
 }
+
 
 // If the username is not found, create a new password, confirming it
 bool createPass(std::unordered_map<std::string, std::string>& dataHash, std::string username) {
@@ -123,6 +123,17 @@ bool createPass(std::unordered_map<std::string, std::string>& dataHash, std::str
     std::cin >> newPass;
     // getNewline();
 
+    // Check quit signal
+    if (newPass == "q" || newPass == "quit") {
+      std::cout << "Quitting Program\n";
+      return false;
+    }
+
+    // Check password requirements
+    if (checkPass(newPass)) {
+
+    }
+
     // Iniitialize confirmation password
     std::cout << "Confirm your password: ";
     std::cin >> confirmPass;
@@ -130,12 +141,8 @@ bool createPass(std::unordered_map<std::string, std::string>& dataHash, std::str
 
     // Give user the option to re-enter their password or quit
     repeat = confirmMatch(newPass, confirmPass);
-    if (repeat) {
-      std::cout << "If you would like to quit, enter 'q' or 'quit'\nEnter any other key to try a new password\n";
-      std::cin >> option;
-      // getNewline();
-      if (option == "q" || option == "quit") return false;
-    }
+    if (repeat)
+      std::cout << "If you would like to quit, enter 'q' or 'quit' as a new password\n";
   } while (repeat);
 
   dataHash.insert({username, newPass}); // **FIX: Should insert the username with the HASHED password
