@@ -22,5 +22,7 @@
 #include <sstream>
 #include <iomanip>
 #include <bitset>
+#include <array>
+
 
 #endif

@@ -8,10 +8,7 @@
  **********************************/
 #ifndef SHA256_H
 #define SHA256_H
-#include <string>
-#include <iostream>
-#include <fstream>
-#include <array>
+#include "project.h"
 
 /*
 class SHA256 {
