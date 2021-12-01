@@ -42,6 +42,15 @@ $(OBJ)/DES.o: $(SRC)/DES.cpp
 $(OBJ)/funcproj.o: $(SRC)/funcproj.cpp
 	$(PP) $(CXXFLAGS) -c $(SRC)/funcproj.cpp -o $(OBJ)/funcproj.o
 
+# for debugging sha1
+sha1: $(SRC)/SHA1.cpp
+	$(PP) $(CXXFLAGS) $(SRC)/SHA1.cpp -o $(EXE)/SHA1
+
+# for debugging sha256
+sha256: $(SRC)/SHA256.cpp
+		$(PP) $(CXXFLAGS) $(SRC)/SHA256.cpp -o $(EXE)/SHA256
+
+# for debugging des
 DES: $(SRC)/DES.cpp
 	$(PP) $(CXXFLAGS) $(SRC)/DES.cpp -o $(EXE)/DES
 

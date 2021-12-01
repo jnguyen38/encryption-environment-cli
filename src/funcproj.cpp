@@ -82,12 +82,86 @@ bool askPass(std::unordered_map<std::string, std::string>& dataHash, std::string
   return true;
 }
 
+<<<<<<< HEAD
 bool checkPass(std::string newPass) {
   if (newPass.size() < 8 || newPass.size() > 16)
     return false;
   else if (newPass.find())
+=======
+// Check if string contains any invalid characters
+bool checkInvalidChar(std::string word) {
+  for (unsigned int i = 0; i < word.length(); ++i) {
+    if (word[i] < 33 || word[i] > 126) {
+      return true;
+    }
+  }
+  return false;
 }
-*/
+
+// Check if string contains at least three of the four: lowercase letters,
+// uppercase letters, numbers, special characters
+bool checkContainCapitalNumSpecial(std::string word) {
+  int numCats = 0;
+  // check for lowercase letters
+  for (unsigned int i = 0; i < word.length(); ++i) {
+    if (word[i] > 96 && word[i] < 123) {
+      numCats++;
+      break;
+    }
+  }
+  // check for uppercase letters
+  for (unsigned int i = 0; i < word.length(); ++i) {
+    if (word[i] > 64 && word[i] < 91) {
+      numCats++;
+      break;
+    }
+  }
+  // check for numbers
+  for (unsigned int i = 0; i < word.length(); ++i) {
+    if (word[i] > 47 && word[i] < 58) {
+      numCats++;
+      break;
+    }
+  }
+  // check for special characters
+  for (unsigned int i = 0; i < word.length(); ++i) {
+    if ((word[i] > 32 && word[i] < 48) || (word[i] > 57 && word[i] < 65) ||
+    (word[i] > 90 && word[i] < 97) || (word[i] > 122 && word[i] < 127)) {
+      numCats++;
+      break;
+    }
+  }
+  if (numCats >= 3) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+// Set new password restrictions
+// must be between 8 and 16 characters
+// can't contain any invalid characters
+// must contain 3 of the 4: lowercase letters, uppercase letters, numbers,
+// or special characters
+bool checkNewPass(std::string newPass) {
+  if (newPass.length() < 8) {
+    return false;
+  }
+  else if (newPass.length() > 16) {
+    return false;
+  }
+  else if (checkInvalidChar(newPass) == true) {
+    return false;
+  }
+  else if (checkContainCapitalNumSpecial(newPass) == false) {
+    return false;
+  }
+  else {
+    return true;
+  }
+>>>>>>> 32d54510c34d6aa80095179be511f75c2917fbc6
+}
 
 bool confirmMatch(std::string newPass, std::string confirmPass) {
   int numTries = 3;
@@ -116,6 +190,7 @@ bool createPass(std::unordered_map<std::string, std::string>& dataHash, std::str
   std::string confirmPass;
   std::string option;
   bool repeat = false;
+  bool valid = false;
 
   do {
     // Initialize first password entry
@@ -123,6 +198,7 @@ bool createPass(std::unordered_map<std::string, std::string>& dataHash, std::str
     std::cin >> newPass;
     // getNewline();
 
+<<<<<<< HEAD
     // Check quit signal
     if (newPass == "q" || newPass == "quit") {
       std::cout << "Quitting Program\n";
@@ -132,6 +208,15 @@ bool createPass(std::unordered_map<std::string, std::string>& dataHash, std::str
     // Check password requirements
     if (checkPass(newPass)) {
 
+=======
+    // Check if new password is valid
+    while (!valid) {
+      valid = checkNewPass(newPass);
+      if (!valid) {
+        std::cout << "Password invalid. Please choose a new password: " << std::endl;
+        std::cin >> newPass;
+      }
+>>>>>>> 32d54510c34d6aa80095179be511f75c2917fbc6
     }
 
     // Iniitialize confirmation password
