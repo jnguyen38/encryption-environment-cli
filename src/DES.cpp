@@ -9,9 +9,32 @@
 
 #include "../include/DES.h"
 
+// Standard ASCII to Hex Conversion
+std::string ascii2hex(std::string asciistr) {
+  std::stringstream hexstream;
+  std::string hexstr;
+  long unsigned int len = asciistr.length();
+
+  // Convert string to char array and define start and end pointers
+  char asciichars[len + 1];
+  char *start = asciichars, *end = asciichars + len;
+  strcpy(asciichars, asciistr.c_str());
+
+  // Stream unsigned value at start iterator using stream manipulators
+  while (start < end) {
+    hexstream << std::uppercase << std::hex << unsigned(*start);
+    start += 1;
+  }
+
+  // Stream hexstream into hexstr
+  hexstream >> hexstr;
+
+  return hexstr;
+}
+
 // Standard Hex to Binary Conversion
-std::string hex2bin(std::string string) {
-  std::string bin = "";
+std::string hex2bin(std::string hexstr) {
+  std::string binstr = "";
   std::unordered_map<char, std::string> converter;
 
   converter['0'] = "0000";
@@ -31,15 +54,15 @@ std::string hex2bin(std::string string) {
   converter['E'] = "1110";
   converter['F'] = "1111";
 
-  for (unsigned int i = 0; i < string.size(); i++) {
-    bin += converter[string[i]];
+  for (unsigned int i = 0; i < hexstr.size(); i++) {
+    binstr += converter[hexstr[i]];
   }
-  return bin;
+  return binstr;
 }
 
 // Standard Binary to Hex Conversion
-std::string bin2hex(std::string string) {
-  std::string hexStr = "", tempBin = "";
+std::string bin2hex(std::string binstr) {
+  std::string hexstr = "", tempBin = "";
   std::unordered_map<std::string, std::string> converter;
 
   converter["0000"] = "0";
@@ -60,15 +83,26 @@ std::string bin2hex(std::string string) {
   converter["1111"] = "F";
 
   // Return the string in hex by creating a temporary four bit binary input for the hashmap
-  for (unsigned int i = 0; i < string.length(); i += 4) {
+  for (unsigned int i = 0; i < binstr.length(); i += 4) {
     tempBin = "";
-    tempBin += string[i];
-    tempBin += string[i + 1];
-    tempBin += string[i + 2];
-    tempBin += string[i + 3];
-    hexStr += converter[tempBin];
+    tempBin += binstr[i];
+    tempBin += binstr[i + 1];
+    tempBin += binstr[i + 2];
+    tempBin += binstr[i + 3];
+    hexstr += converter[tempBin];
   }
-  return hexStr;
+  return hexstr;
+}
+
+// Pad 0s to the end of the hex string to meet the 64-bit block requirement
+std::string pad(std::string hexstr) {
+  long unsigned int len = hexstr.length();
+  long unsigned int numz = (len % 16 == 0) ? 0 : 16 - (len % 16);
+
+  for (long unsigned int i = 0; i < numz; ++i)
+    hexstr += '0';
+
+  return hexstr;
 }
 
 // Permutes a string based on a given permutation array
@@ -252,11 +286,18 @@ int main() {
   // pt is plain text
   std::string pt, key;
 
-  pt = "123456ABCD132536";
+  pt = "hellothere";
   key = "AABB09182736CCDD";
 
   // Hex to binary
+  pt = ascii2hex(pt);
   key = hex2bin(key);
+
+  std::cout << pt << std::endl;
+
+  pt = pad(pt);
+
+  std::cout << pt << std::endl;
 
   // Parity bit drop table
   int keyp[56] = {
@@ -317,10 +358,4 @@ int main() {
   std::cout << "\nEncryption:\n\n";
   std::string cipher = encrypt(pt, rkb, rk);
   std::cout << "\nCipher Text: " << cipher << std::endl;
-
-  std::cout << "\nDecryption\n\n";
-  reverse(rkb.begin(), rkb.end());
-  reverse(rk.begin(), rk.end());
-  std::string text = encrypt(cipher, rkb, rk);
-  std::cout << "\nPlain Text: " << text << std::endl;
 }

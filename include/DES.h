@@ -21,6 +21,8 @@ void reverse (BidirectionalIterator first, BidirectionalIterator last) {
   }
 }
 
+std::string ascii2hex(std::string);
+
 std::string hex2bin(std::string);
 
 std::string bin2hex(std::string);
