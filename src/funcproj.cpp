@@ -112,15 +112,43 @@ int getHashType(void) {
   return type;
 }
 
-std::vector<std::string> createPassVect(std::string plainPass) {
-  std::vector<std::string> passVect {sha256(plainPass), sha1(plainPass), MD5(plainPass), DES(plainPass), shift_left(plainPass, 1)};
-  return passVect;
+std::string getPassHash(int hashType, std::string plainPass) {
+  switch (hashType) {
+    case (1):
+      return sha256(plainPass);
+    case (2):
+      return sha1(plainPass);
+    case (3):
+      return MD5(plainPass);
+    case (4):
+      return DES(plainPass);
+    case (5):
+      return shift_left(plainPass, 1);
+    default:
+      std::cout << "\033[1;91mError:\033[0m Invalid Option (" << hashType << ") Aborting Program.\n";
+      exit(-1);
+  }
 }
 
-bool tryHashes(std::string password, std::vector<std::string> guessHashes) {
-  for (unsigned int hash_iter = 0; hash_iter < guessHashes.size(); ++hash_iter)
-    if (password == guessHashes[hash_iter]) return false;
-  return true;
+int determineHash(std::string password) {
+  long unsigned int len = password.length();
+  if (len < 16) return 5; // Shift_left was used
+  switch (len) {
+    case (64): // SHA-256 was used
+      return 1;
+    case (40): // SHA-1 was used
+      return 2;
+    case (32):
+      for (long unsigned int iter = 0; iter < len; ++iter)
+        if (islower(password[iter])) return 3; // MD5 was used
+      return 4; // DES was used
+    case (16):
+      if (checkContainCapitalNumSpecial(password)) return 5; // Shift_left was used
+      return 4; // DES was used
+    default:
+      std::cout << "\033[1;91mError:\033[0m Invalid Option. Aborting Program.\n";
+      exit(-1);
+  }
 }
 
 /*************************************************
@@ -157,18 +185,17 @@ std::string getHiddenPass(void) {
 }
 
 // If the username is found, ask for the corresponding password, only allowing 3 tries
-bool askPass(std::unordered_map<std::string, std::string>& dataHash, std::string username) {
+bool askPass(std::unordered_map<std::string, std::string>& dataHash, std::string username, std::string &guess) {
   unsigned int numTries = 2;
-  std::string guess;
-  std::vector<std::string> guessHashes;
+  int hashType;
 
   // Initialize guess
   std::cout << "\033[0mPassword: \033[0;36m";
   guess = getHiddenPass();
-  guessHashes = createPassVect(guess);
+  hashType = determineHash(dataHash[username]);
 
   // Repeat attempts if necessary, max of 3 attempts
-  while (tryHashes(dataHash[username], guessHashes)) { // **FIX: Should compare to hashAlg(guess) later *Idea: create a vector of strings indexed by dif hashes of guess
+  while (dataHash[username] != getPassHash(hashType, guess)) {
     if (numTries == 0) {
       std::cout << "\033[1;31mError: \033[0mNo attempts remain\nAborting Program\n";
       return false;
@@ -177,7 +204,6 @@ bool askPass(std::unordered_map<std::string, std::string>& dataHash, std::string
     }
     std::cout << "\033[0mPassword: \033[0;36m";
     guess = getHiddenPass();
-    guessHashes = createPassVect(guess);
     --numTries;
   }
 
@@ -254,7 +280,7 @@ bool confirmMatch(std::string newPass, std::string confirmPass) {
   while (newPass != confirmPass) {
     --numTries;
     if (numTries > 0) {
-      std::cout << "\n\033[0mError: The passwords you entered do not match\nPlease try again: \033[0;36m";
+      std::cout << "\n\033[1;91mError:\033[0m The passwords you entered do not match\nPlease try again: \033[0;36m";
       confirmPass = getHiddenPass();
     } else {
       std::cout << "\n\033[0mYou may have had a typo. Please enter a new password\n";
@@ -267,24 +293,27 @@ bool confirmMatch(std::string newPass, std::string confirmPass) {
 
 
 // If the username is not found, create a new password, confirming it
-bool createPass(std::unordered_map<std::string, std::string>& dataHash, std::string username) {
-  std::string guess;
-  std::string newPass;  // Add hashed versions of passwords
-  std::string confirmPass;
-  std::string option;
-
-  bool repeat = false;
-  bool valid = false;
+bool createPass(std::unordered_map<std::string, std::string>& dataHash, std::string username, std::string &newPass) {
+  std::string guess, confirmPass, option;
+  bool valid, repeat;
 
   do {
     // Initialize first password entry
     std::cout << "\033[0mPlease create a password: \033[0;36m";
     newPass = getHiddenPass();
+    valid = false;
 
     // Check if new password is valid
     while (!valid) {
       valid = checkNewPass(newPass);
       if (!valid) {
+        // Check quit signal
+        if (newPass == "q" || newPass == "quit") {
+          std::cout << "\033[0mQuitting Program\n";
+          return false;
+        }
+
+        // Display password requirements
         std::cout << "\033[1;91mError: \033[mYour password must have"
           << "\n\t(1) 8 - 16 characters,"
           << "\n\t(2) an uppercase letter,"
@@ -294,12 +323,6 @@ bool createPass(std::unordered_map<std::string, std::string>& dataHash, std::str
           << "\n\tIf you would like to quit, enter 'q' or 'quit'\n"
           << "\nPlease choose a new password: \033[0;36m";
           newPass = getHiddenPass();
-
-        // Check quit signal
-        if (newPass == "q" || newPass == "quit") {
-          std::cout << "\033[0mQuitting Program\n";
-          return false;
-        }
       }
     }
 
@@ -314,16 +337,31 @@ bool createPass(std::unordered_map<std::string, std::string>& dataHash, std::str
   } while (repeat);
 
   // Create vector of hashed passwords and get hash type
-  std::vector<std::string> passVect = createPassVect(newPass);
-  int hashType = getHashType() - 1;
+  int hashType = getHashType();
+  newPass = getPassHash(hashType, newPass);
 
-  dataHash.insert({username, passVect[hashType]}); // **FIX: Should insert the username with the HASHED password
+  dataHash.insert({username, newPass});
   return true;
 }
 
 // Append the database file wiht the given username and password
-void saveFile(std::unordered_map<std::string, std::string>& dataHash, std::string username) {
-  std::ofstream sFile ("data/userPassTest.txt", std::fstream::app); // **FIX: Running Test File: Change Later // fstream::app appends rather than overwriting
+void saveFile(std::unordered_map<std::string, std::string>& dataHash, std::string username, std::string filename) {
+  std::ofstream sFile (filename, std::fstream::app);
   sFile << "\n" << username + " " + dataHash[username];
   std::cout << "\033[0mYour username and password have been saved\n";
+  sFile.close();
+}
+
+bool startOver(void) {
+  std::string choice;
+
+  do {
+    std::cout << "\nWould you like to start over? (y|n) \033[0;36m";
+    std::cin >> choice;
+    if (choice == "y") {
+      system("clear");
+      return true;
+    } else if (choice == "n") return false;
+    else std::cout << "\033[1;91mError:\033[0m Invalid choice, please type 'y' or 'n': ";
+} while (true);
 }

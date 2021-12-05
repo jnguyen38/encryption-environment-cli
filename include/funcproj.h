@@ -42,13 +42,17 @@ bool checkUser(std::unordered_map<std::string, std::string>&, std::string);
 
 int getHashType(void);
 
+std::string getPassHash(int, std::string);
+
+int determineHash(std::string);
+
 /*************************************************
  Password Creation, Validation, and Error Handling
  *************************************************/
 
 std::string getHiddenPass(void);
 
-bool askPass(std::unordered_map<std::string, std::string>&, std::string);
+bool askPass(std::unordered_map<std::string, std::string>&, std::string, std::string&);
 
 bool checkInvalidChar(std::string);
 
@@ -58,8 +62,10 @@ bool checkNewPass(std::string);
 
 bool confirmMatch(std::string, std::string);
 
-bool createPass(std::unordered_map<std::string, std::string>&, std::string);
+bool createPass(std::unordered_map<std::string, std::string>&, std::string, std::string&);
 
-void saveFile(std::unordered_map<std::string, std::string>&, std::string);
+void saveFile(std::unordered_map<std::string, std::string>&, std::string, std::string);
+
+bool startOver(void);
 
 #endif

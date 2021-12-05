@@ -11,7 +11,7 @@
 #define DES_H
 
 #include "project.h"
-#define KEY "AABB09182736CCDD"
+#define KEY "0123456789ABCDEF"
 
 // std::reverse hardcoded
 template <class BidirectionalIterator>
