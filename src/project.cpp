@@ -28,6 +28,8 @@ int main (const int argc, const char* argv[]) {
     readData(currUser, currPass, dataHash);
   }
 
+  printWelcome();
+
   // Ask for username and check database
   std::string username = getUsername();
   bool correctPass;
@@ -41,7 +43,7 @@ int main (const int argc, const char* argv[]) {
   if (correctPass)
     saveFile(dataHash, username);
   else
-    std::cout << "No new username or password was saved\n";
+    std::cout << "\033[0m\nNo new username or password was saved\n";
 
   return 0;
 

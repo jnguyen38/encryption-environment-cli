@@ -23,6 +23,9 @@
 #include <iomanip>
 #include <bitset>
 #include <array>
+#include <stdio.h>
+#include <termios.h>
+#include <ncurses.h>
 
 
 #endif

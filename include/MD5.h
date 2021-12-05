@@ -13,6 +13,6 @@
 #include "project.h"
 
 unsigned char *getMd5Hash(unsigned char *, unsigned long, int *);
-void MD5(std::string inpStr);
+std::string MD5(std::string inpStr);
 
 #endif

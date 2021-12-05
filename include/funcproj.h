@@ -16,18 +16,50 @@
 #include "SHA256.h"
 #include "MD5.h"
 
+/**************************************************
+ General File, Terminal, and Data Settings/Handling
+ **************************************************/
+
+void echo(int);
+
+void printWelcome(void);
+
 void getNewline(void);
+
 void checkInput(const int);
+
 void checkFile(std::string&, std::ifstream&);
+
 void readData(std::string, std::string, std::unordered_map<std::string, std::string>&);
+
 std::string getUsername(void);
+
 bool checkUser(std::unordered_map<std::string, std::string>&, std::string);
+
+/**********************************
+ Hash Function and Tutorial Options
+ **********************************/
+
+int getHashType(void);
+
+/*************************************************
+ Password Creation, Validation, and Error Handling
+ *************************************************/
+
+std::string getHiddenPass(void);
+
 bool askPass(std::unordered_map<std::string, std::string>&, std::string);
+
 bool checkInvalidChar(std::string);
+
 bool checkContainCapitalNumSpecial(std::string);
+
 bool checkNewPass(std::string);
+
 bool confirmMatch(std::string, std::string);
+
 bool createPass(std::unordered_map<std::string, std::string>&, std::string);
+
 void saveFile(std::unordered_map<std::string, std::string>&, std::string);
 
 #endif

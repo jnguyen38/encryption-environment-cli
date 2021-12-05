@@ -11,6 +11,7 @@
 #define DES_H
 
 #include "project.h"
+#define KEY "AABB09182736CCDD"
 
 // std::reverse hardcoded
 template <class BidirectionalIterator>
@@ -23,9 +24,15 @@ void reverse (BidirectionalIterator first, BidirectionalIterator last) {
 
 std::string ascii2hex(std::string);
 
+std::string pad(std::string);
+
+std::vector<std::string> separate(std::string);
+
 std::string hex2bin(std::string);
 
 std::string bin2hex(std::string);
+
+std::vector<std::string> getKeys(void);
 
 std::string permute(std::string, int*, int);
 
@@ -33,9 +40,8 @@ std::string shift_left(std::string, int);
 
 std::string binxor(std::string, std::string);
 
-std::string encrypt(std::string pt, std::vector<std::string>, std::vector<std::string>);
+std::vector<std::string> pt_transfer(std::string);
 
-
-
+std::string DES(std::string pt);
 
 #endif

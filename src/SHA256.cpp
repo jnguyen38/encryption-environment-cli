@@ -178,6 +178,7 @@ std::string sha256(std::string input)
 }
 
 /* main for debugging*/
+/*
 int main(){
   //hash "abc"
   std::cout << "string: \"abc\"" << std::endl;
@@ -187,3 +188,4 @@ int main(){
   std::cout << "string: \"cat\"" << std::endl;
   std::cout << "hash: " << sha256("cat") << std::endl;
 }
+*/

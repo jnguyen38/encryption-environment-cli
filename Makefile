@@ -27,8 +27,8 @@ project: $(PROJ_objs)
 	$(PP) $(CXXFLAGS) $(PROJ_objs) -o $(EXE)/project
 
 # Create the hash objects
-$(OBJ)/SHA256.o: $(SRC)/SHA256functions.cpp
-	$(PP) $(CXXFLAGS) -c $(SRC)/SHA256functions.cpp -o $(OBJ)/SHA256.o
+$(OBJ)/SHA256.o: $(SRC)/SHA256.cpp
+	$(PP) $(CXXFLAGS) -c $(SRC)/SHA256.cpp -o $(OBJ)/SHA256.o
 
 $(OBJ)/SHA1.o: $(SRC)/SHA1.cpp
 	$(PP) $(CXXFLAGS) -c $(SRC)/SHA1.cpp -o $(OBJ)/SHA1.o
