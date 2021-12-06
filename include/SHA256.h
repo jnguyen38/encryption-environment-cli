@@ -10,52 +10,51 @@
 #define SHA256_H
 #include "project.h"
 
-class SHA256
-{
-protected:
-    // round constants (k)
-    const static unsigned int sha256_k[];
-    // block size is 64 bits
-    static const unsigned int SHA224_256_BLOCK_SIZE = (512/8);
+// function that calls all other functions
+std::string sha256 (std::string);
 
-public:
-    void init();
-    void update(const unsigned char *message, unsigned int len);
-    void final(unsigned char *digest);
-    // digest size is 32 bits
-    static const unsigned int DIGEST_SIZE = ( 256 / 8);
+// Converts the ASCII string to a binary representation.
+std::vector<unsigned long> convert_to_binary(const std::string);
 
-protected:
-    void transform(const unsigned char *message, unsigned int block_nb);
-    unsigned int m_tot_len;
-    unsigned int m_len;
-    unsigned char m_block[2*SHA224_256_BLOCK_SIZE];
-    unsigned long int m_h[8];
-};
+// Pads the messages to make sure they are a multiple of 512 bits.
+std::vector<unsigned long> pad_to_512bits(const std::vector<unsigned long>);
 
-std::string sha256(std::string input);
+// Changes the n 8 bit segments representing every ASCII character to 32 bit words.
+std::vector<unsigned long> resize_block(std::vector<unsigned long>);
 
-#define SHA2_SHFR(x, n)    (x >> n)
-#define SHA2_ROTR(x, n)   ((x >> n) | (x << ((sizeof(x) << 3) - n)))
-#define SHA2_ROTL(x, n)   ((x << n) | (x >> ((sizeof(x) << 3) - n)))
-#define SHA2_CH(x, y, z)  ((x & y) ^ (~x & z))
-#define SHA2_MAJ(x, y, z) ((x & y) ^ (x & z) ^ (y & z))
-#define SHA256_F1(x) (SHA2_ROTR(x,  2) ^ SHA2_ROTR(x, 13) ^ SHA2_ROTR(x, 22))
-#define SHA256_F2(x) (SHA2_ROTR(x,  6) ^ SHA2_ROTR(x, 11) ^ SHA2_ROTR(x, 25))
-#define SHA256_F3(x) (SHA2_ROTR(x,  7) ^ SHA2_ROTR(x, 18) ^ SHA2_SHFR(x,  3))
-#define SHA256_F4(x) (SHA2_ROTR(x, 17) ^ SHA2_ROTR(x, 19) ^ SHA2_SHFR(x, 10))
-#define SHA2_UNPACK32(x, str)                 \
-{                                             \
-    *((str) + 3) = (unsigned char) ((x)      );       \
-    *((str) + 2) = (unsigned char) ((x) >>  8);       \
-    *((str) + 1) = (unsigned char) ((x) >> 16);       \
-    *((str) + 0) = (unsigned char) ((x) >> 24);       \
-}
-#define SHA2_PACK32(str, x)                   \
-{                                             \
-    *(x) =   ((unsigned int) *((str) + 3)      )    \
-           | ((unsigned int) *((str) + 2) <<  8)    \
-           | ((unsigned int) *((str) + 1) << 16)    \
-           | ((unsigned int) *((str) + 0) << 24);   \
-}
+// The actual hash computing.
+std::string compute_hash(const std::vector<unsigned long>);
+
+// show as hex
+std::string show_as_hex(unsigned long);
+
+// display current block
+void cout_block_state(std::vector<unsigned long>);
+
+// show as binary
+std::string show_as_binary(unsigned long);
+
+// initialize variables for displaying steps
+const bool show_block_state_add_1 = 1;
+const bool show_distance_from_512bit = 1;
+const bool show_padding_results = 1;
+const bool show_working_vars_for_t = 1;
+const bool show_T1_calculation = 1;
+const bool show_T2_calculation = 1;
+const bool show_hash_segments = 1;
+const bool show_Wt = 1;
+
+// define functions
+#define ROTRIGHT(word,bits) (((word) >> (bits)) | ((word) << (32-(bits))))
+#define SSIG0(x) (ROTRIGHT(x,7) ^ ROTRIGHT(x,18) ^ ((x) >> 3))
+#define SSIG1(x) (ROTRIGHT(x,17) ^ ROTRIGHT(x,19) ^ ((x) >> 10))
+#define CH(x,y,z) (((x) & (y)) ^ (~(x) & (z)))
+#define MAJ(x,y,z) (((x) & (y)) ^ ((x) & (z)) ^ ((y) & (z)))
+
+#define BSIG0(x) (ROTRIGHT(x,7) ^ ROTRIGHT(x,18) ^ ((x) >> 3))
+#define BSIG1(x) (ROTRIGHT(x,17) ^ ROTRIGHT(x,19) ^ ((x) >> 10))
+
+#define EP0(x) (ROTRIGHT(x,2) ^ ROTRIGHT(x,13) ^ ROTRIGHT(x,22))
+#define EP1(x) (ROTRIGHT(x,6) ^ ROTRIGHT(x,11) ^ ROTRIGHT(x,25))
+
 #endif
