@@ -17,7 +17,6 @@
 #include <vector>
 #include <unordered_map>
 #include <cmath>
-#include <openssl/evp.h>
 #include <string.h>
 #include <sstream>
 #include <iomanip>
@@ -26,6 +25,7 @@
 #include <stdio.h>
 #include <termios.h>
 #include <ncurses.h>
+#include <stdint.h>
 
 
 #endif

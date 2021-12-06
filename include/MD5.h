@@ -12,7 +12,10 @@
 
 #include "project.h"
 
-unsigned char *getMd5Hash(unsigned char *, unsigned long, int *);
-std::string MD5(std::string inpStr);
+// leftrotate function definition
+#define LEFTROTATE(x, c) (((x) << (c)) | ((x) >> (32 - (c))))
+
+void C_MD5(uint8_t *initial_msg, size_t initial_len);
+std::string MD5(std::string str);
 
 #endif
