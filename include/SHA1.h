@@ -10,17 +10,18 @@
  This code is adapted from github library, which can be found at link
  http://www.zedwood.com/article/cpp-sha1-function
  */
-
- #include <string>
- #include <iostream>
- #include <fstream>
- #include <sstream>
- #include <iomanip>
-
 #ifndef SHA1_H
 #define SHA1_H
-
 #include "project.h"
+
+#include <iostream>
+#include <sstream>
+#include <bitset>
+#include <vector>
+#include <iomanip>
+#include <cstring>
+#include <string>
+#include <fstream>
 
 class SHA1{
 
@@ -33,7 +34,7 @@ public:
 
 private:
     // two variables, type static so the static functions can access these elements
-    static const unsigned int BLOCK_INTS = 16;  /* number of 32bit integers per SHA1 block */
+    static const unsigned int BLOCK_INTS = 16;  // number of 32bit integers per SHA1 block
     static const unsigned int BLOCK_BYTES = BLOCK_INTS * 4;
 
     unsigned long int hash[5];
@@ -47,7 +48,35 @@ private:
     static void read(std::istream &is, std::string &s, int max);
 };
 
+// initialize variables for displaying steps
+const bool show_block_state_add_1 = 1;
+const bool show_distance_from_512bit = 1;
+const bool show_padding_results = 1;
+const bool show_working_vars_for_t = 1;
+const bool show_T1_calculation = 1;
+const bool show_T2_calculation = 1;
+const bool show_hash_segments = 1;
+const bool show_Wt = 1;
+
 //function that allows user to input string and returns final hashed string
-std::string sha1(const std::string &string);
+std::string sha1(std::string string);
+
+// Converts the ASCII string to a binary representation.
+std::vector<unsigned long> convert_to_binary(const std::string);
+
+// Pads the messages to make sure they are a multiple of 512 bits.
+std::vector<unsigned long> pad_to_512bits(const std::vector<unsigned long>);
+
+// Changes the n 8 bit segments representing every ASCII character to 32 bit words.
+std::vector<unsigned long> resize_block(std::vector<unsigned long>);
+
+//display W(t) values
+void show_Wt_values(const std::vector<unsigned long>);
+
+// show as hex
+std::string show_as_hex(unsigned long);
+
+// show as binary
+std::string show_as_binary(unsigned long);
 
 #endif
