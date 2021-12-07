@@ -49,34 +49,33 @@ private:
 };
 
 // initialize variables for displaying steps
-const bool show_block_state_add_1 = 1;
-const bool show_distance_from_512bit = 1;
-const bool show_padding_results = 1;
-const bool show_working_vars_for_t = 1;
-const bool show_T1_calculation = 1;
-const bool show_T2_calculation = 1;
-const bool show_hash_segments = 1;
-const bool show_Wt = 1;
+const bool sha1_show_block_state_add_1 = 1;
+const bool sha1_show_distance_from_512bit = 1;
+const bool sha1_show_padding_results = 1;
+const bool sha1_show_Wt = 1;
 
 //function that allows user to input string and returns final hashed string
 std::string sha1(std::string string);
 
 // Converts the ASCII string to a binary representation.
-std::vector<unsigned long> convert_to_binary(const std::string);
+std::vector<unsigned long> sha1_convert_to_binary(const std::string);
 
 // Pads the messages to make sure they are a multiple of 512 bits.
-std::vector<unsigned long> pad_to_512bits(const std::vector<unsigned long>);
+std::vector<unsigned long> sha1_pad_to_512bits(const std::vector<unsigned long>);
 
 // Changes the n 8 bit segments representing every ASCII character to 32 bit words.
-std::vector<unsigned long> resize_block(std::vector<unsigned long>);
+std::vector<unsigned long> sha1_resize_block(std::vector<unsigned long>);
 
 //display W(t) values
 void show_Wt_values(const std::vector<unsigned long>);
 
+// display current block
+void sha1_cout_block_state(std::vector<unsigned long>);
+
 // show as hex
-std::string show_as_hex(unsigned long);
+std::string sha1_show_as_hex(unsigned long);
 
 // show as binary
-std::string show_as_binary(unsigned long);
+std::string sha1_show_as_binary(unsigned long);
 
 #endif

@@ -16,13 +16,13 @@ std::string sha1(std::string string) {
   std::cout << "\033[0m";
 
   // First convert this to a vector of strings representing 8 bit variables.
-  block1 = convert_to_binary(string);
+  block1 = sha1_convert_to_binary(string);
 
   // Pad it so that the message will be a full 512 bits long.
-  block1 = pad_to_512bits(block1);
+  block1 = sha1_pad_to_512bits(block1);
 
   // Combine the seperate 8 bit sections into single 32 bit sections.
-  block1 = resize_block(block1);
+  block1 = sha1_resize_block(block1);
 
   //display values for W(t), when the block is broken down to 16, 32 bit parts
   show_Wt_values(block1);
@@ -45,21 +45,21 @@ std::string sha1(std::string string) {
 // Shows the current contents of all the blocks in binary
 // Input : Vector of the current blocks.
 // Output : Contents of each block in binary and hex.
-void cout_block_state(std::vector<unsigned long> block)
+void sha1_cout_block_state(std::vector<unsigned long> block)
 {
 	 //display current blocks
    std::cout << "---- Current State of block ----" << std::endl;
 	 for (unsigned int i = 0; i < block.size(); i++)
 	 {
-		  std::cout << "block[" << i << "] binary: " << show_as_binary(block[i])
-			<< "\thex: 0x" << show_as_hex(block[i]) << std::endl;
+		  std::cout << "block[" << i << "] binary: " << sha1_show_as_binary(block[i])
+			<< "\thex: 0x" << sha1_show_as_hex(block[i]) << std::endl;
 	  }
 }
 
 // Shows the current contents of the block in binary.
 // Input : A 32 or less bit block
 // Output : Contents of the block in binary as a string.
-std::string show_as_binary(unsigned long input)
+std::string sha1_show_as_binary(unsigned long input)
 {
   // take string and convert to binary
   std::bitset<8> bs(input);
@@ -69,7 +69,7 @@ std::string show_as_binary(unsigned long input)
 // Shows the current contents of the block in hex.
 // Input : A 32 or less bit block
 // Output : Contents of the block in hex as a string.
-std::string show_as_hex(unsigned long input)
+std::string sha1_show_as_hex(unsigned long input)
 {
 	 //use bitset
 	std::bitset<32> bs(input);
@@ -87,7 +87,7 @@ std::string show_as_hex(unsigned long input)
  // Takes the string and convers all characters to their ASCII Binary equivilents.
  // Input : A string of any length
  // Output : A vector consisting of one 8 bit value per ASCII character.
- std::vector<unsigned long> convert_to_binary(const std::string input)
+ std::vector<unsigned long> sha1_convert_to_binary(const std::string input)
  {
  	// make a vector to hold all the ASCII character values.
  	std::vector<unsigned long> block;
@@ -114,7 +114,7 @@ std::string show_as_hex(unsigned long input)
 // which say how long the original message was, giving you a total of 512 bits.
 // Input : The message in the form of a vector containing 8 bit binary ASCII values.
 // Output : A padded vector consisting of one 8 bit value per ASCII character. */
-std::vector<unsigned long> pad_to_512bits(std::vector<unsigned long> block)
+std::vector<unsigned long> sha1_pad_to_512bits(std::vector<unsigned long> block)
 {
 	long unsigned int l = block.size() * 8;
 
@@ -127,31 +127,31 @@ std::vector<unsigned long> pad_to_512bits(std::vector<unsigned long> block)
 	long unsigned int k = 447 - l;
 
 	// First add in another 8 bit block with the first bit set to 1
-	if(show_block_state_add_1)
+	if(sha1_show_block_state_add_1)
     std::cout << "*****Step 1*****" << std::endl;
     std::cout << "Convert entered password to binary.\n" << std::endl;
-		cout_block_state(block);
+		sha1_cout_block_state(block);
 
 	unsigned long t1 = 0x80;
 	block.push_back(t1);
 
 	//display step 2
-	if(show_block_state_add_1)
+	if(sha1_show_block_state_add_1)
     std::cout << "\n\n*****Step 2*****" << std::endl;
     std::cout << "Add another 8 bit block with the first bit set to 1\n" << std::endl;
-		cout_block_state(block);
+		sha1_cout_block_state(block);
 
 	// 7 zero's added, so subtract 7 from k.
 	k = k - 7;
 
 	// Find how far away from a 512 bit message
-	if (show_distance_from_512bit)
+	if (sha1_show_distance_from_512bit)
 	{
 		std::cout << "\nLength of password in bits: " << l << std::endl;
 		std::cout << "Number of zeroes to be added: " << k + 7 << std::endl;
 	}
 
-	if (show_distance_from_512bit)
+	if (sha1_show_distance_from_512bit)
 		std::cout << "Adding " << k / 8 << " empty eight bit blocks!" << std::endl;
 
 	// Add 8 bit blocks containing zero's
@@ -160,7 +160,7 @@ std::vector<unsigned long> pad_to_512bits(std::vector<unsigned long> block)
 
 	// Add l in the binary form of eight 8 bit blocks.
 	std::bitset<64> big_64bit_blob(l);
-	if (show_distance_from_512bit)
+	if (sha1_show_distance_from_512bit)
 		std::cout << "Length in a 64 bit binary chunk: \n" << big_64bit_blob << std::endl;
 
 	// Split up that 64 bit blob into 8 bit sections.
@@ -178,29 +178,29 @@ std::vector<unsigned long> pad_to_512bits(std::vector<unsigned long> block)
 	}
 
 	//display step 3
-	if (show_padding_results)
+	if (sha1_show_padding_results)
 	{
     std::cout << "\n\n*****Step 3*****" << std::endl;
     std::cout << "Pad with 0's to 512 bits, with the last 64 bits representing the length of the original password.\n" << std::endl;
 		std::cout << "Current 512 bit pre-processed hash in binary:" << std::endl;
 			for(unsigned int i = 0; i < block.size(); i=i+4)
-				std::cout << i << ": " << show_as_binary(block[i]) << "\t"
-				     << i + 1 << ": " << show_as_binary(block[i+1]) << "\t"
-				     << i + 2 << ": " << show_as_binary(block[i+2]) << "\t"
-				     << i + 3 << ": " << show_as_binary(block[i+3]) << std::endl;
+				std::cout << i << ": " << sha1_show_as_binary(block[i]) << "\t"
+				     << i + 1 << ": " << sha1_show_as_binary(block[i+1]) << "\t"
+				     << i + 2 << ": " << sha1_show_as_binary(block[i+2]) << "\t"
+				     << i + 3 << ": " << sha1_show_as_binary(block[i+3]) << std::endl;
     std::cout << "\n";
 		std::cout << "Current 512 bit pre-processed hash in hex:" << std::endl;
 		for(unsigned int i = 0; i < block.size(); i=i+4)
-			std::cout << i << ": " << "0x" + show_as_hex(block[i]) << "\t"
-			     << i + 1 << ": " << "0x" + show_as_hex(block[i+1]) << "\t"
-			     << i + 2 << ": " << "0x" + show_as_hex(block[i+2]) << "\t"
-			     << i + 3 << ": " << "0x" + show_as_hex(block[i+3]) << std::endl;
+			std::cout << i << ": " << "0x" + sha1_show_as_hex(block[i]) << "\t"
+			     << i + 1 << ": " << "0x" + sha1_show_as_hex(block[i+1]) << "\t"
+			     << i + 2 << ": " << "0x" + sha1_show_as_hex(block[i+2]) << "\t"
+			     << i + 3 << ": " << "0x" + sha1_show_as_hex(block[i+3]) << std::endl;
 	}
 	return block;
 }
 
 // Changes the n 8 bit segments representing every ASCII character to 32 bit words.
-std::vector<unsigned long> resize_block(std::vector<unsigned long> input)
+std::vector<unsigned long> sha1_resize_block(std::vector<unsigned long> input)
 {
   std::vector<unsigned long> output(16);
 
@@ -235,8 +235,8 @@ void show_Wt_values(const std::vector<unsigned long> block)
   {
 	 W[t] = block[t] & 0xFFFFFFFF; //perform mask to separate block
 	  	 //print out values
-	 if (show_Wt)
-		 std::cout << "W[" << t << "]: 0x" << show_as_hex(W[t]) << std::endl;
+	 if (sha1_show_Wt)
+		 std::cout << "W[" << t << "]: 0x" << sha1_show_as_hex(W[t]) << std::endl;
   }
 }
 
@@ -371,11 +371,11 @@ void SHA1::transform(unsigned long int block[BLOCK_BYTES])
 		std::cout << "Break down the input to 5 parts, a, b, c, d, e" << std::endl;
 		std::cout << "Initialize variables to buffer values, which are predetermined by SHA-1" << std::endl;
 		std::cout << "Values initially: " << std::endl;
-		std::cout << "a: 0x" << show_as_hex(a) << std::endl;
-		std::cout << "b: 0x" << show_as_hex(b) << std::endl;
-		std::cout << "c: 0x" << show_as_hex(c) << std::endl;
-		std::cout << "d: 0x" << show_as_hex(d) << std::endl;
-		std::cout << "e: 0x" << show_as_hex(e) << std::endl;
+		std::cout << "a: 0x" << sha1_show_as_hex(a) << std::endl;
+		std::cout << "b: 0x" << sha1_show_as_hex(b) << std::endl;
+		std::cout << "c: 0x" << sha1_show_as_hex(c) << std::endl;
+		std::cout << "d: 0x" << sha1_show_as_hex(d) << std::endl;
+		std::cout << "e: 0x" << sha1_show_as_hex(e) << std::endl;
 
 
 		std::cout << "\n\n*****Step 5*****" << std::endl;
@@ -403,11 +403,11 @@ void SHA1::transform(unsigned long int block[BLOCK_BYTES])
 		SHA1_ROUND_1( b, c, d, e, a, 19 );
 
 		std::cout << "\nValues after first 20 iterations: " <<std::endl;
-		std::cout << "a: 0x" << show_as_hex(a) << std::endl;
-		std::cout << "b: 0x" << show_as_hex(b) << std::endl;
-		std::cout << "c: 0x" << show_as_hex(c) << std::endl;
-		std::cout << "d: 0x" << show_as_hex(d) << std::endl;
-		std::cout << "e: 0x" << show_as_hex(e) << std::endl;
+		std::cout << "a: 0x" << sha1_show_as_hex(a) << std::endl;
+		std::cout << "b: 0x" << sha1_show_as_hex(b) << std::endl;
+		std::cout << "c: 0x" << sha1_show_as_hex(c) << std::endl;
+		std::cout << "d: 0x" << sha1_show_as_hex(d) << std::endl;
+		std::cout << "e: 0x" << sha1_show_as_hex(e) << std::endl;
 
 		SHA1_ROUND_2( a, b, c, d, e, 20 );
 		SHA1_ROUND_2( e, a, b, c, d, 21 );
@@ -431,11 +431,11 @@ void SHA1::transform(unsigned long int block[BLOCK_BYTES])
 		SHA1_ROUND_2( b, c, d, e, a, 39 );
 
 		std::cout << "\nValues after 40 iterations: " <<std::endl;
-		std::cout << "a: 0x" << show_as_hex(a) << std::endl;
-		std::cout << "b: 0x" << show_as_hex(b) << std::endl;
-		std::cout << "c: 0x" << show_as_hex(c) << std::endl;
-		std::cout << "d: 0x" << show_as_hex(d) << std::endl;
-		std::cout << "e: 0x" << show_as_hex(e) << std::endl;
+		std::cout << "a: 0x" << sha1_show_as_hex(a) << std::endl;
+		std::cout << "b: 0x" << sha1_show_as_hex(b) << std::endl;
+		std::cout << "c: 0x" << sha1_show_as_hex(c) << std::endl;
+		std::cout << "d: 0x" << sha1_show_as_hex(d) << std::endl;
+		std::cout << "e: 0x" << sha1_show_as_hex(e) << std::endl;
 
 		SHA1_ROUND_3( a, b, c, d, e, 40 );
 		SHA1_ROUND_3( e, a, b, c, d, 41 );
@@ -459,11 +459,11 @@ void SHA1::transform(unsigned long int block[BLOCK_BYTES])
 		SHA1_ROUND_3( b, c, d, e, a, 59 );
 
 		std::cout << "\nValues after 60 iterations: " <<std::endl;
-		std::cout << "a: 0x" << show_as_hex(a) << std::endl;
-		std::cout << "b: 0x" << show_as_hex(b) << std::endl;
-		std::cout << "c: 0x" << show_as_hex(c) << std::endl;
-		std::cout << "d: 0x" << show_as_hex(d) << std::endl;
-		std::cout << "e: 0x" << show_as_hex(e) << std::endl;
+		std::cout << "a: 0x" << sha1_show_as_hex(a) << std::endl;
+		std::cout << "b: 0x" << sha1_show_as_hex(b) << std::endl;
+		std::cout << "c: 0x" << sha1_show_as_hex(c) << std::endl;
+		std::cout << "d: 0x" << sha1_show_as_hex(d) << std::endl;
+		std::cout << "e: 0x" << sha1_show_as_hex(e) << std::endl;
 
 		SHA1_ROUND_4( a, b, c, d, e, 60 );
 		SHA1_ROUND_4( e, a, b, c, d, 61 );
@@ -487,11 +487,11 @@ void SHA1::transform(unsigned long int block[BLOCK_BYTES])
 		SHA1_ROUND_4( b, c, d, e, a, 79 );
 
 		std::cout << "\nValues after all 80 iterations: " <<std::endl;
-		std::cout << "a: 0x" << show_as_hex(a) << std::endl;
-		std::cout << "b: 0x" << show_as_hex(b) << std::endl;
-		std::cout << "c: 0x" << show_as_hex(c) << std::endl;
-		std::cout << "d: 0x" << show_as_hex(d) << std::endl;
-		std::cout << "e: 0x" << show_as_hex(e) << std::endl;
+		std::cout << "a: 0x" << sha1_show_as_hex(a) << std::endl;
+		std::cout << "b: 0x" << sha1_show_as_hex(b) << std::endl;
+		std::cout << "c: 0x" << sha1_show_as_hex(c) << std::endl;
+		std::cout << "d: 0x" << sha1_show_as_hex(d) << std::endl;
+		std::cout << "e: 0x" << sha1_show_as_hex(e) << std::endl;
 
 		// Add the working vars back into hash[]
 		hash[0] += a;
@@ -504,11 +504,11 @@ void SHA1::transform(unsigned long int block[BLOCK_BYTES])
 		std::cout << "\n\n*****Step 6*****" << std::endl;
 		std::cout << "Add these values of a, b, c, d, e back to the initial hash buffers" << std::endl;
 		std::cout << "The values of hash are as follows:" <<std::endl;
-		std::cout << "hash[0]: 0x" << show_as_hex(hash[0]) << std::endl;
-		std::cout << "hash[1]: 0x" << show_as_hex(hash[1]) << std::endl;
-		std::cout << "hash[2]: 0x" << show_as_hex(hash[2]) << std::endl;
-		std::cout << "hash[3]: 0x" << show_as_hex(hash[3]) << std::endl;
-		std::cout << "hash[4]: 0x" << show_as_hex(hash[4]) << std::endl;
+		std::cout << "hash[0]: 0x" << sha1_show_as_hex(hash[0]) << std::endl;
+		std::cout << "hash[1]: 0x" << sha1_show_as_hex(hash[1]) << std::endl;
+		std::cout << "hash[2]: 0x" << sha1_show_as_hex(hash[2]) << std::endl;
+		std::cout << "hash[3]: 0x" << sha1_show_as_hex(hash[3]) << std::endl;
+		std::cout << "hash[4]: 0x" << sha1_show_as_hex(hash[4]) << std::endl;
 
      // Count the number of transformations
      transforms++;
