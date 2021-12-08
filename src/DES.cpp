@@ -9,6 +9,11 @@
 
 #include "../include/DES.h"
 
+// Print Step Number for the tutorial
+void step(int stepNum) {
+  std::cout << "\n\033[2;36mSTEP " << stepNum << "\033[0m\n";
+}
+
 // Standard ASCII to Hex Conversion
 std::string ascii2hex(std::string asciistr) {
   std::stringstream hexstream;
@@ -96,8 +101,7 @@ std::string bin2hex(std::string binstr) {
 
 // Pad 0s to the end of the hex string to meet the 64-bit block requirement
 std::string pad(std::string hexstr) {
-  long unsigned int len = hexstr.length();
-  long unsigned int numpads = (len % 16 == 0) ? 0 : 16 - (len % 16);
+  long unsigned int len = hexstr.length(), size = 64, numpads = (len % size == 0) ? 0 : size - (len % size);
 
   for (long unsigned int zeropad = 0; zeropad < numpads; ++zeropad)
     hexstr += '0';
@@ -147,7 +151,7 @@ std::string binxor(std::string str1, std::string str2) {
 }
 
 std::vector<std::string> pt_transfer(std::string pt) {
-  std::vector<std::string> pt_vect = separate(hex2bin(pad(ascii2hex(pt))));
+  std::vector<std::string> pt_vect = separate(pad(hex2bin(ascii2hex(pt))));
   return pt_vect;
 }
 
@@ -217,6 +221,26 @@ std::vector<std::string> getKeys(void) {
 }
 
 std::string DES(std::string pt) {
+  // Tutorial Output
+  std::cout << "\033[2;31mGENERAL INFO\n\033[0m"
+    << "The Data Encryption Standard (DES) Algorithm is a block-cipher encryption algroithm\n"
+    << "that was developed by IBM in the 1970's. \"Block-Cipher\" means that the algorithm\n"
+    << "takes \"blocks\" of 64 bit binary chunks and encrypts one chunk at a time. \"Encryption\"\n"
+    << "means that the algorithm can be reversed given a key that is entered at the time of\n"
+    << "encryption. For the sake of simplicity, the key in this algorithm is pre-set to the hex\n"
+    << "string \"\033[0;36m0123456789ABCDEF\033[0m\". After a computer was able to crack the DES\n"
+    << "encryption in 1997 via a brute force attack, the algorithm receded from popular use in\n"
+    << "industry. In 2005, it was finally declared \"obsolete and cryptographically broken\" by the\n"
+    << "National Institute of Standards and Technology (NIST).\n";
+
+  step(1);
+  std::cout << "For the first step in DES hashing, we take your password \"\033[0;36m"
+    << pt << "\033[0m\" and convert it to binary:\n\t"
+    << hex2bin(ascii2hex(pt));
+
+  step(2);
+  std::cout << "Next, since ";
+
   // Hexadecimal to binary
   std::vector<std::string> pt_vect = pt_transfer(pt), rkb, rk;
   std::string cipher = "", combine, left, right, right_expanded, x, op;

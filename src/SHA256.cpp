@@ -16,7 +16,7 @@
 
  #include "../include/SHA256.h"
 
- string sha256 (string message) {
+  std::string sha256 (std::string message) {
    // This will hold all the blocks.
   std::vector<unsigned long> block;
 
