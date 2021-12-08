@@ -174,8 +174,8 @@ void C_MD5(uint8_t *initial_msg, size_t initial_len) {
     /* *****
     Step 5 - Concatenate final buffer values to achieve final MD5 hash
     ***** */
-   printf("\n\033[0;31m\t\t***** Step 5 *****\n\033[0m");
-   printf("Concatenate final buffer blocks to achieve final MD5 hash\n\n");
+    printf("\n\033[0;31m\t\t***** Step 5 *****\n\033[0m");
+    printf("Concatenate final buffer blocks to achieve final MD5 hash\n\n");
     printf("32 bit block 1: ");
     p=(uint8_t *)&MD5h0;
     printf("%2.2x%2.2x%2.2x%2.2x\n", p[0], p[1], p[2], p[3]);
@@ -244,7 +244,7 @@ std::string MD5(std::string str) {
     out.append(dig3);
     free(dig3);
 
-    std::cout << "Final MD5 hash: " << out << std::endl;
+    std::cout << "Final MD5 hash: " << "\033[0;32m" << out << "\033[0m" << std::endl;
     std::cout << "--------------------------------------" << std::endl;
     // return output string of MD5 hash
     return out;
