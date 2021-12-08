@@ -16,9 +16,10 @@
 
  #include "../include/SHA256.h"
 
-  std::string sha256 (std::string message) {
+ std::string sha256 (std::string message) {
    // This will hold all the blocks.
   std::vector<unsigned long> block;
+  std::cout << "\033[0m";
 
   // First convert this to a vector of strings representing 8 bit variables.
   block = convert_to_binary(message);
@@ -29,8 +30,12 @@
   // Combine the seperate 8 bit sections into single 32 bit sections.
   block = resize_block(block);
 
-  // This is what does the actual hashing.
+  // This is what does the actual hashing
   std::string hash = compute_hash(block);
+
+  std::cout << "\n\n*****Step 7*****\n";
+  std::cout << "Concatenate the hash values. Final hash:" << std::endl;
+  std::cout << hash << "\n" << std::endl;
 
   return hash;
  }
@@ -118,7 +123,7 @@
  	 for (unsigned int i = 0; i < block.size(); i++)
  	 {
  		  std::cout << "block[" << i << "] binary: " << show_as_binary(block[i])
- 			<< "     hex y: 0x" << show_as_hex(block[i]) << std::endl;
+ 			<< "\thex: 0x" << show_as_hex(block[i]) << std::endl;
  	  }
   }
 
@@ -191,12 +196,16 @@
 
  	// First add in another 8 bit block with the first bit set to 1
  	if(show_block_state_add_1)
+    std::cout << "*****Step 1*****" << std::endl;
+    std::cout << "Convert entered password to binary.\n" << std::endl;
  		cout_block_state(block);
 
  	unsigned long t1 = 0x80;
  	block.push_back(t1);
 
  	if(show_block_state_add_1)
+    std::cout << "\n\n*****Step 2*****" << std::endl;
+    std::cout << "Add another 8 bit block with the first bit set to 1\n" << std::endl;
  		cout_block_state(block);
 
  	// 7 zero's added, so subtract 7 from k.
@@ -205,12 +214,12 @@
  	// Find how far away from a 512 bit message
  	if (show_distance_from_512bit)
  	{
- 		std::cout << "l: " << l << std::endl;
- 		std::cout << "k: " << k + 7 << std::endl;
+ 		std::cout << "\nLength of password in bits: " << l << std::endl;
+ 		std::cout << "Number of zeroes to be added: " << k + 7 << std::endl;
  	}
 
  	if (show_distance_from_512bit)
- 		std::cout << "adding " << k / 8 << " empty eight bit blocks!" << std::endl;
+ 		std::cout << "Adding " << k / 8 << " empty eight bit blocks!" << std::endl;
 
  	// Add 8 bit blocks containing zero's
  	for(unsigned int i = 0; i < k / 8; i++)
@@ -219,7 +228,7 @@
  	// Add l in the binary form of eight 8 bit blocks.
  	std::bitset<64> big_64bit_blob(l);
  	if (show_distance_from_512bit)
- 		std::cout << "l in a 64 bit binary chunk: \n\t" << big_64bit_blob << std::endl;
+ 		std::cout << "Length in a 64 bit binary chunk: \n" << big_64bit_blob << std::endl;
 
  	// Split up that 64 bit blob into 8 bit sections.
  	std::string big_64bit_string = big_64bit_blob.to_string();
@@ -237,18 +246,20 @@
 
  	if (show_padding_results)
  	{
+    std::cout << "\n\n*****Step 3*****" << std::endl;
+    std::cout << "Pad with 0's to 512 bits, with the last 64 bits representing the length of the original password.\n" << std::endl;
  		std::cout << "Current 512 bit pre-processed hash in binary:" << std::endl;
  			for(unsigned int i = 0; i < block.size(); i=i+4)
- 				std::cout << i << ": " << show_as_binary(block[i]) << "     "
- 				     << i + 1 << ": " << show_as_binary(block[i+1]) << "     "
- 				     << i + 2 << ": " << show_as_binary(block[i+2]) << "     "
+ 				std::cout << i << ": " << show_as_binary(block[i]) << "\t"
+ 				     << i + 1 << ": " << show_as_binary(block[i+1]) << "\t"
+ 				     << i + 2 << ": " << show_as_binary(block[i+2]) << "\t"
  				     << i + 3 << ": " << show_as_binary(block[i+3]) << std::endl;
-
+    std::cout << "\n";
  		std::cout << "Current 512 bit pre-processed hash in hex:" << std::endl;
  		for(unsigned int i = 0; i < block.size(); i=i+4)
- 			std::cout << i << ": " << "0x" + show_as_hex(block[i]) << "     "
- 			     << i + 1 << ": " << "0x" + show_as_hex(block[i+1]) << "     "
- 			     << i + 2 << ": " << "0x" + show_as_hex(block[i+2]) << "     "
+ 			std::cout << i << ": " << "0x" + show_as_hex(block[i]) << "\t"
+ 			     << i + 1 << ": " << "0x" + show_as_hex(block[i+1]) << "\t"
+ 			     << i + 2 << ": " << "0x" + show_as_hex(block[i+2]) << "\t"
  			     << i + 3 << ": " << "0x" + show_as_hex(block[i+3]) << std::endl;
  	}
  	return block;
@@ -288,6 +299,9 @@
 
  	unsigned long W[64];
 
+  std::cout << "\n\n*****Step 4*****" << std::endl;
+  std::cout << "Copy the message into a new array,  where each entry is a 32-bit word. \nAdd 48 more words initialized to zero," <<
+  " creating an array of length 64. \nModify the zero-ed indexes of the array from array index 16 to 63 using right rotations and XOR.\n" << std::endl;
  	for(int t = 0; t <= 15; t++)
  	{
  		W[t] = block[t] & 0xFFFFFFFF;
@@ -319,28 +333,29 @@
  	unsigned long h = H7;
 
  	if(show_working_vars_for_t)
- 		std::cout << "         A        B        C        D        "
- 		     << "E        F        G        H        T1       T2" << std::endl;
+    std::cout << "\n\n*****Step 5*****" << std::endl;
+    std::cout << "Perform 64 rounds of operations. This step shows the value of each working variable for the round t.\n" << std::endl;
+    std::cout << "\tA\t\tB\t\tC\t\tD\t\tE\t\tF\t\tG\t\tH" << std::endl;
 
  	for( int t = 0; t < 64; t++)
  	{
  		temp1 = h + EP1(e) + CH(e,f,g) + k[t] + W[t];
  		if ((t == 20) & show_T1_calculation)
  		{
- 			std::cout << "h: 0x" << std::hex << h << "  dec:" << std::dec << h
- 			     << "  sign:" << std::dec << (int)h << std::endl;
+ 			std::cout << "\nh: 0x" << std::hex << h << "  dec:" << std::dec << h
+ 			     << "  sign:" << std::dec << (int)h << "\n" << std::endl;
  			std::cout << "EP1(e): 0x" << std::hex << EP1(e) << "  dec:"
  			     << std::dec << EP1(e) << "  sign:" << std::dec << (int)EP1(e)
- 			     << std::endl;
+ 			     << "\n" << std::endl;
  			std::cout << "CH(e,f,g): 0x" << std::hex << CH(e,f,g) << "  dec:"
  			     << std::dec << CH(e,f,g) << "  sign:" << std::dec
- 			     << (int)CH(e,f,g) << std::endl;
+ 			     << (int)CH(e,f,g) << "\n" << std::endl;
  			std::cout << "k[t]: 0x" << std::hex << k[t] << "  dec:" << std::dec
- 			     << k[t] << "  sign:" << std::dec << (int)k[t] << std::endl;
+ 			     << k[t] << "  sign:" << std::dec << (int)k[t] << "\n" << std::endl;
  			std::cout << "W[t]: 0x" << std::hex << W[t] << "  dec:" << std::dec
- 			     << W[t] << "  sign:" << std::dec << (int)W[t] << std::endl;
+ 			     << W[t] << "  sign:" << std::dec << (int)W[t] << "\n" << std::endl;
  			std::cout << "temp1: 0x" << std::hex << temp1 << "  dec:" << std::dec
- 			     << temp1 << "  sign:" << std::dec << (int)temp1 << std::endl;
+ 			     << temp1 << "  sign:" << std::dec << (int)temp1 << "\n" << std::endl;
  		}
 
  		temp2 = EP0(a) + MAJ(a,b,c);
@@ -349,19 +364,19 @@
  		if ((t == 20) & show_T2_calculation)
  		{
  			std::cout << "a: 0x" << std::hex << a << "  dec:" << std::dec << a
- 			     << "  sign:" << std::dec << (int)a << std::endl;
+ 			     << "  sign:" << std::dec << (int)a << "\n" << std::endl;
  			std::cout << "b: 0x" << std::hex << b << "  dec:" << std::dec << b
- 			     << "  sign:" << std::dec << (int)b << std::endl;
+ 			     << "  sign:" << std::dec << (int)b << "\n" << std::endl;
  			std::cout << "c: 0x" << std::hex << c << "  dec:" << std::dec << c
- 			     << "  sign:" << std::dec << (int)c << std::endl;
+ 			     << "  sign:" << std::dec << (int)c << "\n" << std::endl;
  			std::cout << "EP0(a): 0x" << std::hex << EP0(a) << "  dec:"
  			     << std::dec << EP0(a) << "  sign:" << std::dec << (int)EP0(a)
- 			     << std::endl;
+ 			     << "\n" << std::endl;
  			std::cout << "MAJ(a,b,c): 0x" << std::hex << MAJ(a,b,c) << "  dec:"
  			     << std::dec << MAJ(a,b,c) << "  sign:" << std::dec
- 			     << (int)MAJ(a,b,c) << std::endl;
+ 			     << (int)MAJ(a,b,c) << "\n" << std::endl;
  			std::cout << "temp2: 0x" << std::hex << temp2 << "  dec:" << std::dec
- 			     << temp2 << "  sign:" << std::dec << (int)temp2 << std::endl;
+ 			     << temp2 << "  sign:" << std::dec << (int)temp2 << "\n" << std::endl;
  		}
 
  		h = g;
@@ -376,11 +391,11 @@
  		// Shows the contents of each working variable for the turn T.
  		if (show_working_vars_for_t)
  		{
- 			std::cout << "t= " << t << " " << std::endl;
- 			std::cout << show_as_hex (a) << " " << show_as_hex (b) << " "
- 			     << show_as_hex (c) << " " << show_as_hex (d) << " "
- 			     << show_as_hex (e) << " " << show_as_hex (f) << " "
- 			     << show_as_hex (g) << " " << show_as_hex (h) << " "
+ 			std::cout << "t= " << t << "\t";
+ 			std::cout << show_as_hex (a) << "\t" << show_as_hex (b) << "\t"
+ 			     << show_as_hex (c) << "\t" << show_as_hex (d) << "\t"
+ 			     << show_as_hex (e) << "\t" << show_as_hex (f) << "\t"
+ 			     << show_as_hex (g) << "\t" << show_as_hex (h) << "\t"
  			     << std::endl;
  		}
  	}
@@ -388,22 +403,24 @@
  	// Shows the contents of each hash segment.
  	if(show_hash_segments)
  	{
+    std::cout << "\n\n*****Step 6*****" << std::endl;
+    std::cout << "Modify the hash values by adding their respective variables (a-h) to them.\n" << std::endl;
  		std::cout << "H0: " << show_as_hex (H0) << " + " << show_as_hex (a)
- 			 << " " << show_as_hex (H0 + a) << std::endl;
+ 			 << " = " << show_as_hex (H0 + a) << std::endl;
  		std::cout << "H1: " << show_as_hex (H1) << " + " << show_as_hex (b)
- 			 << " " << show_as_hex (H1 + b) << std::endl;
+ 			 << " = " << show_as_hex (H1 + b) << std::endl;
  		std::cout << "H2: " << show_as_hex (H2) << " + " << show_as_hex (c)
- 			 << " " << show_as_hex (H2 + c) << std::endl;
+ 			 << " = " << show_as_hex (H2 + c) << std::endl;
  		std::cout << "H3: " << show_as_hex (H3) << " + " << show_as_hex (d)
- 			 << " " << show_as_hex (H3 + d) << std::endl;
+ 			 << " = " << show_as_hex (H3 + d) << std::endl;
  		std::cout << "H4: " << show_as_hex (H4) << " + " << show_as_hex (e)
- 			 << " " << show_as_hex (H4 + e) << std::endl;
+ 			 << " = " << show_as_hex (H4 + e) << std::endl;
  		std::cout << "H5: " << show_as_hex (H5) << " + " << show_as_hex (f)
- 			 << " " << show_as_hex (H5 + f) << std::endl;
+ 			 << " = " << show_as_hex (H5 + f) << std::endl;
  		std::cout << "H6: " << show_as_hex (H6) << " + " << show_as_hex (g)
- 			 << " " << show_as_hex (H6 + g) << std::endl;
+ 			 << " = " << show_as_hex (H6 + g) << std::endl;
  		std::cout << "H7: " << show_as_hex (H7) << " + " << show_as_hex (h)
- 			 << " " << show_as_hex (H7 + h) << std::endl;
+ 			 << " = " << show_as_hex (H7 + h) << std::endl;
  	}
 
  	// Add up all the working variables to each hash and make sure we are still

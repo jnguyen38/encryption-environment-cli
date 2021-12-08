@@ -14,12 +14,13 @@ uint32_t MD5h0, MD5h1, MD5h2, MD5h3;
 
 // C method of computing MD5 - used in C++ implementation
 void C_MD5(uint8_t *initial_msg, size_t initial_len) {
- 
+
+    system("clear");
     // Message (to prepare)
     uint8_t *msg = NULL;
  
     // Note: All variables are unsigned 32 bit and wrap modulo 2^32 when calculating
- 
+
     // r specifies the per-round shift amounts
  
     const uint32_t r[] = {7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
@@ -51,7 +52,17 @@ void C_MD5(uint8_t *initial_msg, size_t initial_len) {
     MD5h1 = 0xefcdab89;
     MD5h2 = 0x98badcfe;
     MD5h3 = 0x10325476;
- 
+    
+    // print password and initial bitlength
+    
+    /* ***** 
+    Step 1: Pad string to length congruent to 448 (mod 512)
+    ***** */
+
+    printf("\033[0;31m\t\t***** Step 1 *****\n\033[0m");
+    printf("Pad input string to bitlength congruent to 448 (mod 512)\n\n");
+    printf("Password initial bitlength: %lu bits\n", 8 * initial_len);
+
     // Pre-processing: adding a single 1 bit
     //append "1" bit to message    
     /* Notice: the input bytes are considered as bits strings,
@@ -62,24 +73,45 @@ void C_MD5(uint8_t *initial_msg, size_t initial_len) {
     //append length mod (2 pow 64) to message
  
     size_t new_len = ((((initial_len + 8) / 64) + 1) * 64) - 8;
- 
-    // allocate 64 more bits for padding 
+
+    // print step of appending bits until length congruent to 448 (mod 512)
+    printf("Now, append bits until message bitlength is congruent to 448 (mod 512):\n");
+    printf("\tBits added: %lu\n", (long unsigned int) (8 * (new_len - initial_len)));
+    printf("Password's new bitlength after appending 0's: %lu bits\n\n", 8 * new_len);
+
+    /* ***** 
+    Step 2: allocate 64 more bits for padding 
+    ***** */
+
+    printf("\033[0;31m\t\t***** Step 2 *****\n\033[0m");
+    printf("Now, 64 more bits are allocated to achieve bitlength multiple of 512.\n");
+    printf("\tBits added: 64\n");
+
     msg = static_cast<uint8_t *>(malloc(new_len + 64));
-    
+    printf("Password's new bitlength after appending 0's: %lu bits\n\n", 8 * new_len + 64);
     // memcpy message from initial_msg to initial_len
     memcpy(msg, initial_msg, initial_len);
     
     // write the "1" bit
     msg[initial_len] = 128; 
+
+    
+    // append length in bits at end of the buffer
+    uint32_t bits_len = 8 * (uint32_t)initial_len;
+    memcpy(msg + new_len, &bits_len, 4);           
  
-    uint32_t bits_len = 8 * (uint32_t)initial_len; // note, we append the len
-    memcpy(msg + new_len, &bits_len, 4);           // in bits at the end of the buffer
- 
-    // Process the message in successive 512-bit chunks:
+    /* *****
+    Step 3: Process the message in successive 512-bit chunks:
+    ***** */
+
+    printf("\033[0;31m\t\t***** Step 3 *****\n\033[0m");
+    printf("Break password into successive 512-bit chunks - repeated for each such chunk\n");
     //for each 512-bit chunk of message:
     size_t offset;
-    for(offset=0; offset < new_len; offset += (512/8)) {
- 
+    for (offset = 0; offset < new_len; offset += (512/8)) {
+        // print buffer values (changes to buffer values only happen for chunks greater than 512 bits)
+        printf("\nPadded buffer values for 512-bit chunk #%lu:\n\tMD5h0: 0x%8.8x MD5h1: 0x%8.8x MD5h2: 0x%8.8x MD5h3: 0x%8.8x\n\n", 
+                ((offset + 1) / (512/8)) + 1, MD5h0, MD5h1, MD5h2, MD5h3);
         // break chunk into sixteen 32-bit words w[j], 0 ≤ j ≤ 15
         uint32_t *w = (uint32_t *) (msg + offset);
  
@@ -88,49 +120,83 @@ void C_MD5(uint8_t *initial_msg, size_t initial_len) {
         uint32_t b = MD5h1;
         uint32_t c = MD5h2;
         uint32_t d = MD5h3;
- 
-        // Main loop:
-        uint32_t i;
-        for(i = 0; i<64; i++) {      
+
+        /* ***** 
+        Step 4 - Apply auxiliary functions
+        ***** */
+
+        printf("\033[0;31m\t\t\t***** Step 4 ***** (chunk #%lu)\n\033[0m", ((offset + 1) / (512/8)) + 1);
+        printf("\t\tApply auxiliary functions and rotations to each chunk\n");
+        for (uint32_t i = 0; i < 64; i++) {      
             // apply auxiliary functions 
             uint32_t f, g;
 
-                if (i < 16) {
+            if (i < 16) {
+                if (i % 16 == 0)
+                    printf("\tApplying auxiliary function F:\n");
                 f = (b & c) | ((~b) & d);   // Function F
                 g = i;                          // predefined method to get element
             } else if (i < 32) {
+                if (i % 16 == 0)
+                    printf("\tApplying auxiliary function G:\n");
                 f = (d & b) | ((~d) & c);   // Function G
                 g = (5*i + 1) % 16;             // predefined method to get element
             } else if (i < 48) {
+                if (i % 16 == 0)
+                    printf("\tApplying auxiliary function H:\n");
                 f = b ^ c ^ d;              // Function H
                 g = (3*i + 5) % 16;           // predefined method to get element
             } else {
+                if (i % 16 == 0)
+                    printf("\tApplying auxiliary function I:\n");
                 f = c ^ (b | (~d));         // Function I
                 g = (7*i) % 16;               // predefined method to get element
             }
             uint32_t temp = d;
             d = c;
             c = b;
-
+            // apply left rotation given parameters specified by a, f, k[i], w[g], and r[i]
+            printf("\t\trotate left(%x + %x + %x + %x, %d)\n", a, f, k[i], w[g], r[i]);
             b = b + LEFTROTATE((a + f + k[i] + w[g]), r[i]);
             a = temp;
         }
  
-        // Add this chunk's hash to result so far:
- 
-        // update buffer values
+        // update buffer values hash to result so far
         MD5h0 += a;
         MD5h1 += b;
         MD5h2 += c;
         MD5h3 += d;
- 
+
     }
- 
+    
+    //var char digest[16] := h0 append h1 append h2 append h3 //(Output is in little-endian)
+    uint8_t *p;
+    /* *****
+    Step 5 - Concatenate final buffer values to achieve final MD5 hash
+    ***** */
+    printf("\n\033[0;31m\t\t***** Step 5 *****\n\033[0m");
+    printf("Concatenate final buffer blocks to achieve final MD5 hash\n\n");
+    printf("32 bit block 1: ");
+    p=(uint8_t *)&MD5h0;
+    printf("%2.2x%2.2x%2.2x%2.2x\n", p[0], p[1], p[2], p[3]);
+
+    printf("32 bit block 2: ");
+    p=(uint8_t *)&MD5h1;
+    printf("%2.2x%2.2x%2.2x%2.2x\n", p[0], p[1], p[2], p[3]);
+
+    printf("32 bit block 3: ");
+    p=(uint8_t *)&MD5h2;
+    printf("%2.2x%2.2x%2.2x%2.2x\n", p[0], p[1], p[2], p[3]);
+
+    printf("32 bit block 4: ");
+    p=(uint8_t *)&MD5h3;
+    printf("%2.2x%2.2x%2.2x%2.2x\n", p[0], p[1], p[2], p[3]);
+
     // free msg
     free(msg);
  
 }
-// C++ MD5 implementation which retrns the MD5 hash of the input string
+// C++ MD5 implementation which returns std::string MD5 hash of the input std::string
 std::string MD5(std::string str) {
 
     // output string
@@ -178,6 +244,8 @@ std::string MD5(std::string str) {
     out.append(dig3);
     free(dig3);
 
+    std::cout << "Final MD5 hash: " << "\033[0;32m" << out << "\033[0m" << std::endl;
+    std::cout << "--------------------------------------" << std::endl;
     // return output string of MD5 hash
     return out;
 }
