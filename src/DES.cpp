@@ -10,8 +10,12 @@
 #include "../include/DES.h"
 
 // Print Step Number for the tutorial
+void step(double stepNum) {
+  std::cout << "\n\t\033[3;31mSTEP " << stepNum << "\033[0m\n";
+}
+
 void step(int stepNum) {
-  std::cout << "\n\033[2;36mSTEP " << stepNum << "\033[0m\n";
+  std::cout << "\n\033[3;31mSTEP " << stepNum << "\033[0m\n";
 }
 
 // Standard ASCII to Hex Conversion
@@ -133,8 +137,9 @@ std::string permute(std::string str, int* permArr, int len) {
 std::string shift_left(std::string str, int shifts) {
   std::string temp = "";
   for (int i = 0; i < shifts; i++) {
-    for (unsigned int j = 1; j < str.length(); j++)
+    for (unsigned int j = 1; j < str.length(); j++) {
       temp += str[j];
+    }
     temp += str[0];
     str = temp;
     temp = "";
@@ -197,12 +202,28 @@ std::vector<std::string> getKeys(void) {
   // Hex to binary
   key = hex2bin(key);
 
-  // getting 56 bit key from 64 bit using the parity bits
-  key = permute(key, keyp, 56); // key without parity
+  step(3);
+  std::cout << "Next, since DES is an encryption algorithm, we need to get the 64 bit key that\n"
+    << "we will use to encrypt the binary password chunk, which is hardcoded in our case:\n\t\033[0;36m"
+    << key;
+
+    // getting 56 bit key from 64 bit using the parity bits
+    key = permute(key, keyp, 56); // key without parity
+
+  std::cout << "\033[0m\nUsing the parity bit drop permutation table, we will compress the key from 64 bits to 56:\n\t\033[0;36m"
+    << key;
 
   // Splitting
   left = key.substr(0, 28);
   right = key.substr(28, 28);
+
+  std::cout << "\033[0m\nAnd then split the compressed key into two halves, a right and left side:\n\t\033[0;36m"
+    << "\033[0mRight: \033[0;36m" << right << "\n\t"
+    << "\033[0mLeft: \033[0;36m" << left << std::endl;
+
+  step(4);
+  std::cout << "Now we have our fully compressed right and left side keys. DES shifts and permutes the keys\n"
+    << "over 16 rounds to create 16 unique 48 bit keys for each round:\n\t";
 
   for (int i = 0; i < 16; i++) {
     // Shifting
@@ -216,14 +237,16 @@ std::vector<std::string> getKeys(void) {
     RoundKey = permute(combine, key_comp, 48);
 
     rkb.push_back(RoundKey);
+
+    std::cout << "\033[0mRound " << i + 1 << ": \033[0;36m" << RoundKey << "\n\t";
   }
   return rkb;
 }
 
 std::string DES(std::string pt) {
   // Tutorial Output
-  std::cout << "\033[2;31mGENERAL INFO\n\033[0m"
-    << "The Data Encryption Standard (DES) Algorithm is a block-cipher encryption algroithm\n"
+  std::cout << "\n\033[3;31mGENERAL INFO\n\033[0m"
+    << "The \033[0;36mData Encryption Standard (DES) Algorithm\033[0m is a block-cipher encryption algroithm\n"
     << "that was developed by IBM in the 1970's. \"Block-Cipher\" means that the algorithm\n"
     << "takes \"blocks\" of 64 bit binary chunks and encrypts one chunk at a time. \"Encryption\"\n"
     << "means that the algorithm can be reversed given a key that is entered at the time of\n"
@@ -235,15 +258,21 @@ std::string DES(std::string pt) {
 
   step(1);
   std::cout << "For the first step in DES hashing, we take your password \"\033[0;36m"
-    << pt << "\033[0m\" and convert it to binary:\n\t"
-    << hex2bin(ascii2hex(pt));
-
-  step(2);
-  std::cout << "Next, since ";
+    << pt << "\033[0m\" and convert it to binary:\n\t\033[0;36m"
+    << hex2bin(ascii2hex(pt)) << "\033[0m\n";
 
   // Hexadecimal to binary
   std::vector<std::string> pt_vect = pt_transfer(pt), rkb, rk;
   std::string cipher = "", combine, left, right, right_expanded, x, op;
+
+  step(2);
+  std::cout << "Next, since DES is a block cipher encryption, we need to pad zeros to the binary\n"
+    << "string until we have a string length that is a multiple of 64 bits:\n\t\033[0;36m"
+    << pad(hex2bin(ascii2hex(pt))) << "\033[0m\nand separate the string into 64 bit chunks:\n\t\033[0;36m";
+
+  for (unsigned int i = 0; i < pt_vect.size(); ++i) {
+    std::cout << i + 1 << ". " << pt_vect[i] << "\n\t";
+  }
 
   // Initial Permutation Table (Standard IP Table Values for DES found online)
   int initial_perm[64] = {
@@ -340,24 +369,51 @@ std::string DES(std::string pt) {
     rk.push_back(bin2hex(rkb[key_iter]));
   }
 
+  step(5);
+  std::cout << "Now we begin our 16 rounds of password encryption using our 64 bit\n"
+    << "password blocks and our 16 48 bit keys\n";
+
   for (unsigned int pt_iter = 0; pt_iter < pt_vect.size(); ++pt_iter) {
-    //std::cout << "\n\t\033[1;96mBLOCK " << pt_iter + 1 << " ENCRYPTION\n\033[0m]";
+    std::cout << "\n\tBLOCK " << pt_iter + 1 << " ENCRYPTION\n";
 
     // Initial Permutation
     pt = permute(pt_vect[pt_iter], initial_perm, 64);
-    //std::cout << "\nAfter initial permutation: " << bin2hex(pt) << std::endl;
+    step(5.1);
+    std::cout << "\n\tFirst, we permute the 64 bit password block with the standard DES\n\t"
+      << "initial permuation table:\n\t\t\033[0;36m"
+      << pt << std::endl;
 
     // Splitting
     left = pt.substr(0, 32);
     right = pt.substr(32, 32);
-    //std::cout << "After splitting: L0= " << bin2hex(left) << " R0= " << bin2hex(right) << std::endl;
-    //std::cout << std::endl;
+    std::cout << "\t\033[0mAfter splitting in two halves, we get:\n\t\t"
+      << "Left: \033[0;36m" << left
+      << "\n\t\t\033[0mRight: \033[0;36m" << right << "\033[0m\n\t";
+
+    step(5.2);
+    std::cout << "\tWe now get our right and left sides by undergoing 16 encryption\n\t"
+      << "rounds. In each round, we expand the right substring from 32 to 48 bits\n\t"
+      << " with the standard DES expansion table and XOR the 48 bit expanded right\n\t"
+      << "substring with the 48 bit key for the round we are on. We then take the\n\t"
+      << "XOR'd string and substitute using the standard DES substitution box.\n\t"
+      << "We permute the resulting substitution string with the standard DES D-box\n\t"
+      << "compression table, which compresses the string from 48 bits back down to 32 bits.\n\t"
+      << "Once we have the compressed substituted string, we XOR again with the left \n\t"
+      << "to get the final left side substring for the round. As long as we are not on\n\t"
+      << "the last round, we swap the left and right strings\n\t";
+
     for (int i = 0; i < 16; i++) {
+      std::cout << "\n\t\033[0;36mRound " << i + 1 << ":\n\t";
+
       // Expansion D-box
       right_expanded = permute(right, exp_d, 48);
+      std::cout << "Expanded Right Substring: \033[0;36m"
+        << right_expanded << "\n\t\033[0m";
 
       // XOR RoundKey[i] and right_expanded
       x = binxor(rkb[i], right_expanded);
+      std::cout << "XOR'd substring using the expanded right and the round key: "
+        << "\033[0;36m" << x << "\n\t\033[0m";
 
       // S-boxes
       op = "";
@@ -374,26 +430,48 @@ std::string DES(std::string pt) {
         op += char(val + '0');
       }
 
+      std::cout << "Resulting string from permuting with the substitution box: "
+        << "\033[0;36m" << op << "\n\t\033[0m";
+
       // Straight D-box
       op = permute(op, per, 32);
+
+      std::cout << "Compressed substitution string from permuting with the D-box: "
+        << "\033[0;36m" << op << "\n\t\033[0m";
 
       // XOR left and op
       x = binxor(op, left);
       left = x;
 
+      std::cout << "Resulting string from XOR'ing with the compressed string and left substring: "
+        << "\033[0;36m" << left << "\n\t\033[0m";
+
       // Swapper if not at the last key
       if (i != 15)
         swap(left, right);
 
-      //std::cout << "Round " << i + 1 << " " << bin2hex(left) << " " << bin2hex(right) << " " << rk[i] << std::endl;
+      std::cout << "\n\tLeft:\033[0;36m " << left << "\033[0m Right: \033[0;36m" << right << "\033[0m\n";
     }
 
     // Combination of left and right halves
     combine = left + right;
 
+    step(5.3);
+    std::cout << "\tOnce we undergo the 16 rounds of encryption, we can combine the\n\t"
+      << "right and left halves to give us:\n\t\033[0;36m"
+      << combine << "\033[0m\n\t";
+
     // Concatentation and Final Permutation
     cipher += bin2hex(permute(combine, final_perm, 64));
+    step(5.4);
+    std::cout << "\tNow, we can add the combined string in hex to the final cipher:\n\t\033[0;36m"
+      << cipher << "\033[0m\n";
   }
+
+  step(6);
+  std::cout << "Our final cipher in hex for your original password is:\n\t\033[0;36m"
+    << cipher << "\n\033[0m"
+    << "Which will be added to our database alongside your username\n";
 
   return cipher;
 }
