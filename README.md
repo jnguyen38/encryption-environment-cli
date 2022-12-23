@@ -3,3 +3,24 @@ Our project objective is to build a Password Protection Simulation Engine that u
 
 Link to explanatory article:
 https://docs.google.com/document/d/1aDFlFlzOveRRZa7K_13vF2zfeLzYp3wWw2MwNugrIh8/edit?usp=sharing
+
+## Usage
+
+To use or test this CLI Environment, first clone this repository onto your local machine
+
+```
+git clone https://github.com/jnguyen38/encryption-environment-cli
+```
+
+Then, `cd` into the environment and run the Makefile command
+
+```
+cd encryption-environement-cli
+make project
+```
+
+Finally, run the project executable with
+
+```
+./exe/project
+```
