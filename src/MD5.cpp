@@ -215,10 +215,10 @@ std::string MD5(std::string str) {
     uint8_t *p;
 
     // allocate digests for each 32 bit (8 byte) block of words
-    char* dig0 = (char *)malloc(8);
-    char* dig1 = (char *)malloc(8);
-    char* dig2 = (char *)malloc(8);
-    char* dig3 = (char *)malloc(8);
+    char* dig0 = (char *)malloc(9);
+    char* dig1 = (char *)malloc(9);
+    char* dig2 = (char *)malloc(9);
+    char* dig3 = (char *)malloc(9);
 
     // point digest to MD5h0, print hex values (8 characters) to dig0, append to out string, and free dig0
     p = (uint8_t *)&MD5h0;
